@@ -12,31 +12,73 @@ h1{margin:0;font-size:22px}
 #tap{position:absolute;inset:14%;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#2dd4bf,#0d9488 60%,#115e59);color:#fff;font-size:68px;font-weight:800;box-shadow:0 10px 30px #0009,inset 0 -8px 20px #0004;transition:transform .08s}
 #tap:active{transform:scale(.94)}
 #tap small{display:block;font-size:15px;font-weight:400;opacity:.85}
+#ring.flash svg circle:last-child{animation:fl .8s}
+@keyframes fl{0%{stroke:#fff}100%{stroke:#fde68a}}
 .row{display:flex;gap:10px;width:100%;max-width:360px}
 .box{flex:1;background:#ffffff14;border-radius:14px;padding:10px;text-align:center}
 .box b{display:block;font-size:22px;color:#fde68a}.box span{font-size:12px;opacity:.8}
+.box.done{background:#fde68a33;outline:2px solid #fde68a}
 .btn{flex:1;padding:12px;border-radius:12px;border:0;background:#ffffff1f;color:#fff;font-size:15px}
 #set{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:12px;gap:8px;flex-direction:column}
 #set.show{display:flex}#set input{padding:10px;border-radius:10px;border:0;font-size:16px}
+#set .del{background:#7f1d1d}
+#toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#fde68a;color:#052e2b;font-weight:800;padding:12px 22px;border-radius:99px;opacity:0;transition:opacity .3s,top .3s;pointer-events:none;z-index:9;box-shadow:0 8px 24px #0008}
+#toast.show{opacity:1;top:34px}
+#stats{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:14px;flex-direction:column;gap:10px}
+#stats.show{display:flex}
+#chart{display:flex;align-items:flex-end;gap:6px;height:90px;direction:ltr}
+#chart .col{flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%;justify-content:flex-end}
+#chart .b{width:100%;border-radius:6px 6px 0 0;background:linear-gradient(#2dd4bf,#0d9488);min-height:3px}
+#chart .d{font-size:10px;opacity:.7}
+#chart .today .b{background:linear-gradient(#fde68a,#f59e0b)}
+.srow{display:flex;gap:10px}
+.sbox{flex:1;background:#ffffff14;border-radius:12px;padding:8px;text-align:center}
+.sbox b{display:block;font-size:19px;color:#fde68a}.sbox span{font-size:11px;opacity:.8}
 </style></head><body>
+<div id="toast"></div>
 <h1>📿 المسبحة</h1>
 <div id="zk"></div><div id="txt"></div>
 <div id="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#ffffff22" stroke-width="5"/><circle id="pr" cx="50" cy="50" r="46" fill="none" stroke="#fde68a" stroke-width="5" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"/></svg><button id="tap">0<small>اضغط للتسبيح</small></button></div>
-<div class="row"><div class="box"><b id="rd">0</b><span>الجولات</span></div><div class="box"><b id="td">0</b><span>إجمالي اليوم</span></div><div class="box"><b id="tt">0</b><span>الإجمالي</span></div></div>
+<div class="row"><div class="box"><b id="rd">0</b><span>الجولات</span></div><div class="box" id="dayBox"><b id="td">0</b><span id="tdl">إجمالي اليوم</span></div><div class="box"><b id="tt">0</b><span>الإجمالي</span></div></div>
 <div class="row"><button class="btn" id="rs">تصفير</button><button class="btn" id="vb">اهتزاز: تشغيل</button><button class="btn" id="ad">ذكر جديد</button></div>
-<div id="set"><input id="nn" placeholder="نص الذكر"><input id="ng" type="number" placeholder="العدد المستهدف (مثال 33)"><button class="btn" id="sv">إضافة</button></div>
+<div class="row"><button class="btn" id="st">📊 إحصائياتي</button><button class="btn" id="sn">صوت: تشغيل</button><button class="btn" id="au">انتقال تلقائي: إيقاف</button></div>
+<div id="set"><input id="nn" placeholder="نص الذكر"><input id="ng" type="number" placeholder="العدد المستهدف (مثال 33)"><button class="btn" id="sv">إضافة</button><button class="btn del" id="dz">🗑 حذف الذكر الحالي</button><input id="goal" type="number" placeholder="هدفك اليومي (مثال 100)"><button class="btn" id="gs">حفظ الهدف اليومي</button></div>
+<div id="stats">
+<div class="srow"><div class="sbox"><b id="stk">0</b><span>🔥 سلسلة الأيام</span></div><div class="sbox"><b id="bst">0</b><span>أفضل يوم</span></div><div class="sbox"><b id="trd">0</b><span>كل الجولات</span></div></div>
+<div style="font-size:13px;opacity:.85;text-align:center">آخر 7 أيام</div>
+<div id="chart"></div>
+</div>
 <script>
 const $=i=>document.getElementById(i),today=()=>new Date().toISOString().slice(0,10);
+const dstr=d=>{const x=new Date();x.setDate(x.getDate()-d);return x.toISOString().slice(0,10)};
 let D=JSON.parse(localStorage.getItem('tasbeeh6')||'null')||{z:[{n:'سبحان الله',g:33},{n:'الحمد لله',g:33},{n:'الله أكبر',g:34},{n:'لا إله إلا الله',g:100},{n:'أستغفر الله',g:100},{n:'اللهم صل على محمد',g:100}],i:0,c:{},r:{},tot:0,day:{},vib:true};
+if(D.snd===undefined)D.snd=true;if(D.auto===undefined)D.auto=false;if(!D.goal)D.goal=0;
 const sv=()=>localStorage.setItem('tasbeeh6',JSON.stringify(D));
+let AC=null;
+function chime(){if(!D.snd)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;[[660,0],[880,.12]].forEach(([f,dt])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+dt);g.gain.exponentialRampToValueAtTime(.12,t+dt+.02);g.gain.exponentialRampToValueAtTime(.0001,t+dt+.25);o.connect(g);g.connect(AC.destination);o.start(t+dt);o.stop(t+dt+.3)})}catch(e){}}
+let toastT=null;
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
+function streak(){let s=0;let start=D.day[today()]?0:1;for(let d=start;;d++){if(D.day[dstr(d)]>0)s++;else break}return s}
+function bestDay(){let b=0;for(const k in D.day)if(D.day[k]>b)b=D.day[k];return b}
+function totalRounds(){let t=0;for(const k in D.r)t+=D.r[k];return t}
+const DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+function renderChart(){const ch=$('chart');ch.innerHTML='';let mx=1;const vals=[];for(let d=6;d>=0;d--){const v=D.day[dstr(d)]||0;vals.push([d,v]);if(v>mx)mx=v}
+ vals.forEach(([d,v])=>{const col=document.createElement('div');col.className='col'+(d==0?' today':'');const b=document.createElement('div');b.className='b';b.style.height=(v/mx*100)+'%';b.title=v;const lb=document.createElement('div');lb.className='d';lb.textContent=d==0?'اليوم':DN[new Date(dstr(d)+'T12:00:00').getDay()];col.appendChild(b);col.appendChild(lb);ch.appendChild(col)})}
 function R(){const z=D.z[D.i],c=D.c[D.i]||0;$('txt').textContent=z.n;$('tap').firstChild.nodeValue=c;$('pr').style.strokeDashoffset=289*(1-Math.min(1,c/z.g));
- $('rd').textContent=D.r[D.i]||0;$('td').textContent=D.day[today()]||0;$('tt').textContent=D.tot;$('vb').textContent='اهتزاز: '+(D.vib?'تشغيل':'إيقاف');
+ $('rd').textContent=D.r[D.i]||0;const td=D.day[today()]||0;$('td').textContent=td;$('tdl').textContent=D.goal?('هدف اليوم '+D.goal):'إجمالي اليوم';$('dayBox').classList.toggle('done',D.goal>0&&td>=D.goal);$('tt').textContent=D.tot;
+ $('vb').textContent='اهتزاز: '+(D.vib?'تشغيل':'إيقاف');$('sn').textContent='صوت: '+(D.snd?'تشغيل':'إيقاف');$('au').textContent='انتقال تلقائي: '+(D.auto?'تشغيل':'إيقاف');
+ $('stk').textContent=streak();$('bst').textContent=bestDay();$('trd').textContent=totalRounds();renderChart();
  $('zk').innerHTML='';D.z.forEach((x,i)=>{const b=document.createElement('button');b.className='ch'+(i==D.i?' on':'');b.textContent=x.n+' · '+x.g;b.onclick=()=>{D.i=i;sv();R()};$('zk').appendChild(b)})}
 $('tap').onclick=()=>{const z=D.z[D.i];D.c[D.i]=(D.c[D.i]||0)+1;D.tot++;D.day[today()]=(D.day[today()]||0)+1;
  if(D.vib&&navigator.vibrate)navigator.vibrate(10);
- if(D.c[D.i]>=z.g){D.c[D.i]=0;D.r[D.i]=(D.r[D.i]||0)+1;if(D.vib&&navigator.vibrate)navigator.vibrate([80,60,80])}
+ if(D.c[D.i]>=z.g){D.c[D.i]=0;D.r[D.i]=(D.r[D.i]||0)+1;if(D.vib&&navigator.vibrate)navigator.vibrate([80,60,80]);chime();
+  $('ring').classList.remove('flash');void $('ring').offsetWidth;$('ring').classList.add('flash');
+  if(D.auto&&D.z.length>1){toast('ما شاء الله! كملت «'+z.n+'» — الذكر التالي');const nx=(D.i+1)%D.z.length;setTimeout(()=>{D.i=nx;sv();R()},900)}else toast('ما شاء الله! جولة كاملة من «'+z.n+'» ✨')}
  sv();R()};
-$('rs').onclick=()=>{D.c[D.i]=0;sv();R()};$('vb').onclick=()=>{D.vib=!D.vib;sv();R()};$('ad').onclick=()=>$('set').classList.toggle('show');
+$('rs').onclick=()=>{D.c[D.i]=0;sv();R()};$('vb').onclick=()=>{D.vib=!D.vib;sv();R()};$('sn').onclick=()=>{D.snd=!D.snd;sv();R();if(D.snd)chime()};$('au').onclick=()=>{D.auto=!D.auto;sv();R()};$('ad').onclick=()=>$('set').classList.toggle('show');
+$('st').onclick=()=>$('stats').classList.toggle('show');
 $('sv').onclick=()=>{const n=$('nn').value.trim(),g=parseInt($('ng').value);if(n&&g>0){D.z.push({n,g});D.i=D.z.length-1;$('nn').value='';$('ng').value='';$('set').classList.remove('show');sv();R()}};
+$('dz').onclick=()=>{if(D.z.length<=1){toast('لازم يفضل ذكر واحد على الأقل');return}const nm=D.z[D.i].n;const names=D.z.map(x=>x.n);const oldC=D.c,oldR=D.r;D.z.splice(D.i,1);D.c={};D.r={};D.z.forEach((x,i)=>{const oi=names.indexOf(x.n);if(oi>=0){if(oldC[oi])D.c[i]=oldC[oi];if(oldR[oi])D.r[i]=oldR[oi]}});D.i=0;toast('اتحذف «'+nm+'»');sv();R()};
+$('gs').onclick=()=>{const g=parseInt($('goal').value);D.goal=g>0?g:0;$('goal').value='';toast(D.goal?('هدفك اليومي: '+D.goal):'الهدف اليومي اتلغى');sv();R()};
 R();
 </script></body></html>
