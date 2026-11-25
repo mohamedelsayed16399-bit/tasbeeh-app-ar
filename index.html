@@ -1,0 +1,42 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover"><meta name="theme-color" content="#052e2b"><title>المسبحة</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
+body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 30%,#0f766e,#052e2b 70%);color:#ecfeff;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px;gap:14px}
+h1{margin:0;font-size:22px}
+#zk{display:flex;gap:8px;overflow-x:auto;width:100%;padding:2px}
+.ch{padding:8px 14px;border-radius:99px;border:1px solid #5eead4;background:#0000;color:#ccfbf1;white-space:nowrap;font-size:15px}
+.ch.on{background:#5eead4;color:#042f2e;font-weight:800}
+#txt{font-size:30px;font-weight:800;text-align:center;min-height:44px;color:#fde68a}
+#ring{position:relative;width:min(78vw,320px);aspect-ratio:1}
+#ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+#tap{position:absolute;inset:14%;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#2dd4bf,#0d9488 60%,#115e59);color:#fff;font-size:68px;font-weight:800;box-shadow:0 10px 30px #0009,inset 0 -8px 20px #0004;transition:transform .08s}
+#tap:active{transform:scale(.94)}
+#tap small{display:block;font-size:15px;font-weight:400;opacity:.85}
+.row{display:flex;gap:10px;width:100%;max-width:360px}
+.box{flex:1;background:#ffffff14;border-radius:14px;padding:10px;text-align:center}
+.box b{display:block;font-size:22px;color:#fde68a}.box span{font-size:12px;opacity:.8}
+.btn{flex:1;padding:12px;border-radius:12px;border:0;background:#ffffff1f;color:#fff;font-size:15px}
+#set{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:12px;gap:8px;flex-direction:column}
+#set.show{display:flex}#set input{padding:10px;border-radius:10px;border:0;font-size:16px}
+</style></head><body>
+<h1>📿 المسبحة</h1>
+<div id="zk"></div><div id="txt"></div>
+<div id="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#ffffff22" stroke-width="5"/><circle id="pr" cx="50" cy="50" r="46" fill="none" stroke="#fde68a" stroke-width="5" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"/></svg><button id="tap">0<small>اضغط للتسبيح</small></button></div>
+<div class="row"><div class="box"><b id="rd">0</b><span>الجولات</span></div><div class="box"><b id="td">0</b><span>إجمالي اليوم</span></div><div class="box"><b id="tt">0</b><span>الإجمالي</span></div></div>
+<div class="row"><button class="btn" id="rs">تصفير</button><button class="btn" id="vb">اهتزاز: تشغيل</button><button class="btn" id="ad">ذكر جديد</button></div>
+<div id="set"><input id="nn" placeholder="نص الذكر"><input id="ng" type="number" placeholder="العدد المستهدف (مثال 33)"><button class="btn" id="sv">إضافة</button></div>
+<script>
+const $=i=>document.getElementById(i),today=()=>new Date().toISOString().slice(0,10);
+let D=JSON.parse(localStorage.getItem('tasbeeh6')||'null')||{z:[{n:'سبحان الله',g:33},{n:'الحمد لله',g:33},{n:'الله أكبر',g:34},{n:'لا إله إلا الله',g:100},{n:'أستغفر الله',g:100},{n:'اللهم صل على محمد',g:100}],i:0,c:{},r:{},tot:0,day:{},vib:true};
+const sv=()=>localStorage.setItem('tasbeeh6',JSON.stringify(D));
+function R(){const z=D.z[D.i],c=D.c[D.i]||0;$('txt').textContent=z.n;$('tap').firstChild.nodeValue=c;$('pr').style.strokeDashoffset=289*(1-Math.min(1,c/z.g));
+ $('rd').textContent=D.r[D.i]||0;$('td').textContent=D.day[today()]||0;$('tt').textContent=D.tot;$('vb').textContent='اهتزاز: '+(D.vib?'تشغيل':'إيقاف');
+ $('zk').innerHTML='';D.z.forEach((x,i)=>{const b=document.createElement('button');b.className='ch'+(i==D.i?' on':'');b.textContent=x.n+' · '+x.g;b.onclick=()=>{D.i=i;sv();R()};$('zk').appendChild(b)})}
+$('tap').onclick=()=>{const z=D.z[D.i];D.c[D.i]=(D.c[D.i]||0)+1;D.tot++;D.day[today()]=(D.day[today()]||0)+1;
+ if(D.vib&&navigator.vibrate)navigator.vibrate(10);
+ if(D.c[D.i]>=z.g){D.c[D.i]=0;D.r[D.i]=(D.r[D.i]||0)+1;if(D.vib&&navigator.vibrate)navigator.vibrate([80,60,80])}
+ sv();R()};
+$('rs').onclick=()=>{D.c[D.i]=0;sv();R()};$('vb').onclick=()=>{D.vib=!D.vib;sv();R()};$('ad').onclick=()=>$('set').classList.toggle('show');
+$('sv').onclick=()=>{const n=$('nn').value.trim(),g=parseInt($('ng').value);if(n&&g>0){D.z.push({n,g});D.i=D.z.length-1;$('nn').value='';$('ng').value='';$('set').classList.remove('show');sv();R()}};
+R();
+</script></body></html>
