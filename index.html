@@ -34,7 +34,25 @@ h1{margin:0;font-size:22px}
 .srow{display:flex;gap:10px}
 .sbox{flex:1;background:#ffffff14;border-radius:12px;padding:8px;text-align:center}
 .sbox b{display:block;font-size:19px;color:#fde68a}.sbox span{font-size:11px;opacity:.8}
-</style></head><body>
+</style><meta name="description" content="مسبحة إلكترونية بسيطة وسريعة بتحفظ عدّك وبتشتغل بدون نت. مجانية ومن غير إعلانات.">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_EG">
+<meta property="og:title" content="المسبحة — عدّاد تسبيح بسيط">
+<meta property="og:description" content="مسبحة إلكترونية بسيطة وسريعة بتحفظ عدّك وبتشتغل بدون نت. مجانية ومن غير إعلانات.">
+<meta property="og:url" content="https://mohamedelsayed16399-bit.github.io/tasbeeh-app-ar/">
+<meta property="og:image" content="https://mohamedelsayed16399-bit.github.io/tasbeeh-app-ar/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="المسبحة — عدّاد تسبيح بسيط">
+<meta name="twitter:description" content="مسبحة إلكترونية بسيطة وسريعة بتحفظ عدّك وبتشتغل بدون نت. مجانية ومن غير إعلانات.">
+<meta name="twitter:image" content="https://mohamedelsayed16399-bit.github.io/tasbeeh-app-ar/og.png">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+</head><body>
 <div id="toast"></div>
 <h1>📿 المسبحة</h1>
 <div id="zk"></div><div id="txt"></div>
@@ -81,4 +99,20 @@ $('sv').onclick=()=>{const n=$('nn').value.trim(),g=parseInt($('ng').value);if(n
 $('dz').onclick=()=>{if(D.z.length<=1){toast('لازم يفضل ذكر واحد على الأقل');return}const nm=D.z[D.i].n;const names=D.z.map(x=>x.n);const oldC=D.c,oldR=D.r;D.z.splice(D.i,1);D.c={};D.r={};D.z.forEach((x,i)=>{const oi=names.indexOf(x.n);if(oi>=0){if(oldC[oi])D.c[i]=oldC[oi];if(oldR[oi])D.r[i]=oldR[oi]}});D.i=0;toast('اتحذف «'+nm+'»');sv();R()};
 $('gs').onclick=()=>{const g=parseInt($('goal').value);D.goal=g>0?g:0;$('goal').value='';toast(D.goal?('هدفك اليومي: '+D.goal):'الهدف اليومي اتلغى');sv();R()};
 R();
-</script></body></html>
+</script><div id="mkt-share" style="text-align:center;margin:22px auto 30px;max-width:480px;padding:0 14px;font-family:system-ui,'Segoe UI',Tahoma,sans-serif;color:#9aa3b2;font-size:13px;line-height:1.9">
+<button id="mkt-btn" type="button" style="background:#0f766e;color:#fff;border:0;border-radius:12px;padding:11px 22px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer">📤 شارك التطبيق مع صحابك</button>
+<div style="margin-top:10px">صُنع في مصر 🇪🇬</div>
+</div>
+<script>
+(function(){
+ var u="https://mohamedelsayed16399-bit.github.io/tasbeeh-app-ar/",t="\u0627\u0644\u0645\u0633\u0628\u062d\u0629 \u2014 \u0639\u062f\u0651\u0627\u062f \u062a\u0633\u0628\u064a\u062d \u0628\u0633\u064a\u0637",x="\u0645\u0633\u0628\u062d\u0629 \u0625\u0644\u0643\u062a\u0631\u0648\u0646\u064a\u0629 \u0628\u0633\u064a\u0637\u0629 \u0648\u0645\u062c\u0627\u0646\u064a\u0629\u060c \u062c\u0631\u0651\u0628\u0647\u0627";
+ var b=document.getElementById('mkt-btn');
+ if(b)b.addEventListener('click',function(){
+  if(navigator.share){navigator.share({title:t,text:x,url:u}).catch(function(){});}
+  else{window.open('https://wa.me/?text='+encodeURIComponent(x+' '+u),'_blank');}
+ });
+ if('serviceWorker' in navigator)window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){});});
+})();
+</script>
+</body></html>
+
