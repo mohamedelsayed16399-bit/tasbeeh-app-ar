@@ -35,6 +35,12 @@ h1{margin:0;font-size:22px}
 .btn{flex:1;padding:12px 6px;border-radius:12px;border:0;background:#ffffff1f;color:#fff;font-size:14px;font-family:inherit}
 #set{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:12px;gap:8px;flex-direction:column}
 #set.show{display:flex}#set input{padding:10px;border-radius:10px;border:0;font-size:16px}
+#edp{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:12px;gap:8px;flex-direction:column}
+#edp.show{display:flex}
+#edp input,#stats input{padding:10px;border-radius:10px;border:0;font-size:16px;font-family:inherit;min-width:0}
+#edp .del{background:#7f1d1d}
+#stats .srow input{flex:1}
+.ph{font-size:14px;font-weight:800;color:#fde68a;text-align:center;letter-spacing:.2px}
 #set .del{background:#7f1d1d}
 #rem{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:12px;gap:8px;flex-direction:column}
 #rem.show{display:flex}
@@ -99,13 +105,17 @@ h1{margin:0;font-size:22px}
 <div id="zk"></div><div id="txt"></div>
 <div id="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#ffffff22" stroke-width="5"/><circle id="pr" cx="50" cy="50" r="46" fill="none" stroke="#fde68a" stroke-width="5" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"/></svg><button id="tap">0<small>اضغط للتسبيح</small></button></div>
 <div class="row"><div class="box"><b id="rd">0</b><span>الجولات</span></div><div class="box" id="dayBox"><b id="td">0</b><span id="tdl">إجمالي اليوم</span></div><div class="box"><b id="tt">0</b><span>الإجمالي</span></div></div>
-<div class="row"><button class="btn" id="rs">تصفير</button><button class="btn" id="vb">اهتزاز: تشغيل</button><button class="btn" id="ad">ذكر جديد</button></div>
-<div class="row"><button class="btn" id="st">📊 إحصائياتي</button><button class="btn" id="sn">صوت: تشغيل</button><button class="btn" id="au">تلقائي: إيقاف</button></div>
+<div class="row"><button class="btn" id="rs">تصفير</button><button class="btn" id="vb">اهتزاز: تشغيل</button><button class="btn" id="sn">صوت: تشغيل</button></div>
+<div class="row"><button class="btn" id="ad">➕ ذكر جديد</button><button class="btn" id="ed">✏️ تعديل العدد</button></div>
+<div class="row"><button class="btn" id="st">📊 إحصائياتي</button><button class="btn" id="au">تلقائي: إيقاف</button></div>
 <div class="row"><button class="btn" id="rm">⏰ تنبيه الذكر</button><button class="btn" id="ins">⬇️ تثبيت التطبيق</button></div>
-<div id="set"><input id="nn" placeholder="نص الذكر"><input id="ng" type="number" placeholder="العدد المستهدف (مثال 33)"><button class="btn" id="sv">إضافة</button><div class="et">✏️ تعديل عدد الذكر الحالي «<span id="ecn"></span>»:</div><input id="eg" type="number" inputmode="numeric" placeholder="العدد الجديد"><button class="btn" id="egs">💾 حفظ العدد الجديد</button><button class="btn del" id="dz">🗑 حذف الذكر الحالي</button><input id="goal" type="number" placeholder="هدفك اليومي (مثال 100)"><button class="btn" id="gs">حفظ الهدف اليومي</button></div>
+<div id="set"><div class="ph">➕ ذكر جديد</div><input id="nn" placeholder="نص الذكر"><input id="ng" type="number" inputmode="numeric" placeholder="العدد المستهدف (مثال 33)"><button class="btn" id="sv">➕ إضافة الذكر</button></div>
+<div id="edp"><div class="ph">✏️ تعديل عدد الذكر الحالي</div><div class="et" id="edn"></div><input id="eg" type="number" inputmode="numeric" placeholder="العدد الجديد"><button class="btn" id="egs">💾 حفظ العدد الجديد</button><button class="btn del" id="dz">🗑 حذف الذكر الحالي</button></div>
 <div id="rem"><div class="hint">⏰ تنبيه يومي بصوت مميز واهتزاز. مهم بصراحة: التنبيه بيرن طالما التطبيق مفتوح (حتى لو في الخلفية والشاشة مطفية غالبًا) — لو قفلت التطبيق خالص مفيش تنبيه، لأن دي حدود أي موقع مجاني من غير سيرفر.</div><input id="rt" type="time"><select id="rp"></select><button class="btn" id="ra">➕ إضافة التنبيه</button><div id="rl"></div></div>
 <div id="rmbig"><div class="card"><div class="ic">📿</div><div class="msg" id="rmbmsg"></div><button id="rmbok">تمام، هسبّح دلوقتي</button></div></div>
 <div id="stats">
+<div class="ttl">🎯 هدفك اليومي</div>
+<div class="srow"><input id="goal" type="number" inputmode="numeric" placeholder="مثال 100"><button class="btn" id="gs">حفظ الهدف</button></div>
 <div class="srow"><div class="sbox"><b id="stk">0</b><span>🔥 سلسلة الأيام</span></div><div class="sbox"><b id="bst">0</b><span>أفضل يوم</span></div><div class="sbox"><b id="trd">0</b><span>كل الجولات</span></div></div>
 <div class="ttl">آخر 7 أيام</div>
 <div id="chart"></div>
@@ -218,7 +228,7 @@ function R(){const s=S(),z=s.z[s.i],c=s.c[s.i]||0;
  $('dayBox').classList.toggle('done',D.goal>0&&td>=D.goal);$('tt').textContent=D.tot;
  $('vb').textContent='اهتزاز: '+(D.vib?'تشغيل':'إيقاف');$('sn').textContent='صوت: '+(D.snd?'تشغيل':'إيقاف');$('au').textContent='تلقائي: '+(D.auto?'تشغيل':'إيقاف');
  const P=PACKS[D.pack];$('pbtn').textContent=P.icon+' '+P.name+' ▾';
- $('ecn').textContent=z.n;$('eg').placeholder='العدد الجديد (الحالي: '+z.g+')';
+ $('edn').textContent='الذكر الحالي: «'+z.n+'» — العدد الحالي: '+z.g;$('eg').placeholder='العدد الجديد (مثال '+z.g+')';
  const isPack=D.pack!=='custom';$('pprog').classList.toggle('show',isPack);$('pcnt').classList.toggle('show',isPack);
  if(isPack){const done=s.z.filter((x,i)=>(s.r[i]||0)>=1).length;$('pfill').style.width=(done/s.z.length*100)+'%';$('pcnt').textContent=(s.cdone?'✅ ':'')+done+'/'+s.z.length}
  $('stk').textContent=streak();$('bst').textContent=bestDay();$('trd').textContent=totalRounds();
@@ -241,17 +251,18 @@ $('rs').onclick=()=>{const s=S();s.c[s.i]=0;s.cdone=false;sv();R()};
 $('vb').onclick=()=>{D.vib=!D.vib;sv();R()};
 $('sn').onclick=()=>{D.snd=!D.snd;sv();R();if(D.snd)chime()};
 $('au').onclick=()=>{D.auto=!D.auto;sv();R()};
-$('ad').onclick=()=>$('set').classList.toggle('show');
+$('ad').onclick=()=>{const o=!$('set').classList.contains('show');$('edp').classList.remove('show');$('set').classList.toggle('show',o);if(o)setTimeout(()=>$('nn').focus(),60)};
+$('ed').onclick=()=>{const o=!$('edp').classList.contains('show');$('set').classList.remove('show');$('edp').classList.toggle('show',o);if(o){R();setTimeout(()=>$('eg').focus(),60)}};
 $('pbtn').onclick=()=>$('packs').classList.toggle('show');
 $('st').onclick=()=>$('stats').classList.toggle('show');
 $('sv').onclick=()=>{const n=$('nn').value.trim(),g=parseInt($('ng').value);if(n&&g>0){const s=S();s.z.push({n:n,g:g});s.i=s.z.length-1;$('nn').value='';$('ng').value='';$('set').classList.remove('show');toast('اتضاف «'+n+'»');sv();R()}};
-$('dz').onclick=()=>{const s=S();if(s.z.length<=1){toast('لازم يفضل ذكر واحد على الأقل');return}const nm=s.z[s.i].n;const names=s.z.map(x=>x.n);const oldC=s.c,oldR=s.r;s.z.splice(s.i,1);s.c={};s.r={};s.z.forEach((x,i)=>{const oi=names.indexOf(x.n);if(oi>=0){if(oldC[oi])s.c[i]=oldC[oi];if(oldR[oi])s.r[i]=oldR[oi]}});s.i=0;toast('اتحذف «'+nm+'»');sv();R()};
+$('dz').onclick=()=>{const s=S();if(s.z.length<=1){toast('لازم يفضل ذكر واحد على الأقل');return}const nm=s.z[s.i].n;const names=s.z.map(x=>x.n);const oldC=s.c,oldR=s.r;s.z.splice(s.i,1);s.c={};s.r={};s.z.forEach((x,i)=>{const oi=names.indexOf(x.n);if(oi>=0){if(oldC[oi])s.c[i]=oldC[oi];if(oldR[oi])s.r[i]=oldR[oi]}});s.i=0;toast('اتحذف «'+nm+'»');$('edp').classList.remove('show');sv();R()};
 $('gs').onclick=()=>{const g=parseInt($('goal').value);D.goal=g>0?g:0;$('goal').value='';toast(D.goal?('هدفك اليومي: '+D.goal):'الهدف اليومي اتلغى');checkAch();sv();R()};
 document.addEventListener('keydown',e=>{const tg=e.target&&e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA')return;if(e.code==='Space'||e.code==='Enter'){e.preventDefault();count()}});
 
 $('egs').onclick=()=>{const s=S(),g=parseInt($('eg').value);if(!(g>0)){toast('اكتب عدد أكبر من صفر');return}
  const z=s.z[s.i];z.g=g;if((s.c[s.i]||0)>=g)s.c[s.i]=0;$('eg').value='';
- toast('عدد «'+z.n+'» بقى '+g+' ✅');sv();R()};
+ toast('عدد «'+z.n+'» بقى '+g+' ✅');$('edp').classList.remove('show');sv();R()};
 let deferredInst=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInst=e;$('ins').classList.add('on')});
 window.addEventListener('appinstalled',()=>{deferredInst=null;$('ins').classList.remove('on');toast('التطبيق اتثبت ✅')});
