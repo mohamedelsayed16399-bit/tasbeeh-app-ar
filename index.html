@@ -60,6 +60,7 @@ h1{margin:0;font-size:22px}
 #rmbig button{padding:13px;border-radius:12px;border:0;background:#0d9488;color:#fff;font-size:16px;font-weight:700;font-family:inherit}
 #toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#fde68a;color:#052e2b;font-weight:800;padding:12px 22px;border-radius:99px;opacity:0;transition:opacity .3s,top .3s;pointer-events:none;z-index:9;box-shadow:0 8px 24px #0008;max-width:88vw;text-align:center;font-size:15px}
 #toast.show{opacity:1;top:34px}
+body.foc>*:not(#ring):not(#txt):not(#focx):not(#toast):not(#rmbig){display:none!important}
 #stats{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:14px;flex-direction:column;gap:10px}
 #stats.show{display:flex}
 #chart{display:flex;align-items:flex-end;gap:6px;height:90px;direction:ltr}
@@ -171,11 +172,25 @@ h1{margin:0;font-size:22px}
 <div class="ttl">📊 إحصاءات متقدمة</div>
 <div id="adv" style="font-size:12px;line-height:1.9;text-align:center;opacity:.9"></div>
 <div class="trow"><button class="tbtn" id="csvex" style="flex:1">📤 تصدير الإحصائيات CSV</button></div>
+<div class="ttl">☁️ مزامنة أجهزتك (بكود سري)</div>
+<div class="trow"><button class="tbtn" id="syncnew" style="flex:1">🔑 ولّد كود مزامنة جديد</button></div>
+<div class="trow"><input id="syncin" placeholder="أو اكتب كود موبايلك التاني" style="flex:1"><button class="tbtn" id="syncjoin">اربط</button></div>
+<div id="syncl" style="font-size:12px;opacity:.85;text-align:center;line-height:1.7"></div>
+<div id="syncg" style="font-size:13px;text-align:center;color:var(--gold);font-weight:700"></div>
+<div class="ttl">🎯 وضع التركيز</div>
+<div class="trow"><button class="tbtn" id="foc" style="flex:1">تشغيل وضع التركيز (عدّاد بس)</button></div>
+<div class="ttl">📳 درجة الاهتزاز</div>
+<div class="trow"><button class="tbtn" id="vibc" style="flex:1">الاهتزاز: عادي</button></div>
+<div class="ttl">🤳 العدّ بهزّ الموبايل</div>
+<div class="trow"><button class="tbtn" id="shk" style="flex:1">العدّ بالهز: إيقاف</button></div>
+<div class="ttl">🤲 تذكيرات يومية جاهزة</div>
+<div class="trow"><button class="tbtn" id="wk3" style="flex:1">ورد قبل النوم (10:30م)</button><button class="tbtn" id="wk4" style="flex:1">صدقة يومية (12ظ)</button></div>
 <div class="ttl">🔒 خصوصيتك</div>
-<div style="font-size:12px;opacity:.8;text-align:center;line-height:1.8">كل بياناتك (عدّاداتك وأذكارك ودفترك) محفوظة على جهازك بس، ومفيش أي حاجة بتتبعت لأي سيرفر. النسخة الاحتياطية بتطلعها بنفسك لما تحب.</div>
+<div style="font-size:12px;opacity:.8;text-align:center;line-height:1.8">كل بياناتك محفوظة على جهازك. ولو فعّلت المزامنة، بتتخزن نسخة من عدّاداتك بس (من غير أي بيانات شخصية) في قاعدة Firebase بتاعتك تحت الكود السري اللي اخترته — ومفيش أي حاجة تانية بتتبعت.</div>
 </div>
 <div id="smp"><button id="smx">✕</button><div id="smtxt"></div><button id="smtap">0</button></div>
 <div id="rmbig"><div class="card"><div class="ic">📿</div><div class="msg" id="rmbmsg"></div><button id="rmbok">تمام، هسبّح دلوقتي</button></div></div>
+<button id="focx" style="display:none;position:fixed;top:14px;right:14px;z-index:99;background:#0008;border:1px solid #5eead4;color:#ccfbf1;border-radius:99px;padding:8px 14px;font-size:14px;font-family:inherit">✕ إنهاء التركيز</button>
 <div id="stats">
 <div class="ttl">🎯 هدفك اليومي</div>
 <div class="srow"><input id="goal" type="number" inputmode="numeric" placeholder="مثال 100"><button class="btn" id="gs">حفظ الهدف</button></div>
@@ -358,9 +373,9 @@ function count(){const s=S(),z=s.z[s.i];
  if(s.c[s.i]>0&&s.c[s.i]%100===0){chime();toast('💯 وصلت '+s.c[s.i]+' من «'+z.n+'»')}
  if(D.ch&&D.ch.on){D.ch.c=(D.ch.c||0)+1;if(D.ch.c>=D.ch.g){D.ch.on=false;setTimeout(()=>{chime();lastRem=null;$('rmbmsg').textContent='🏆 مبروك! كسبت التحدي ووصلت '+D.ch.g;$('rmbig').classList.add('show')},600)}}
  tick();
- if(D.vib&&navigator.vibrate)navigator.vibrate(10);
+ if(D.vib)vibGo(10);
  if(s.c[s.i]>=z.g){s.c[s.i]=0;s.r[s.i]=(s.r[s.i]||0)+1;
-  if(D.vib&&navigator.vibrate)navigator.vibrate([80,60,80]);chime();
+  if(D.vib)vibGo([80,60,80]);chime();
   const ring=$('ring');ring.classList.remove('flash');void ring.offsetWidth;ring.classList.add('flash');
   if(D.auto&&s.z.length>1){toast('ما شاء الله! كملت «'+z.n+'» — الذكر التالي');const nx=(s.i+1)%s.z.length;setTimeout(()=>{s.i=nx;sv();R()},900)}
   else toast('ما شاء الله! جولة كاملة من «'+z.n+'» ✨');
@@ -531,6 +546,34 @@ const _pc0=packDoneCheck;packDoneCheck=function(s){const was=S().cdone;_pc0(s);i
 const _at0=applyTheme;applyTheme=function(){if(D.anight){const h=new Date().getHours();if(h>=21||h<5){const sv0=D.theme;D.theme='night';_at0();D.theme=sv0;document.querySelectorAll('[data-th]').forEach(b=>b.classList.toggle('on',b.dataset.th==='night'));return}}_at0()};
 applyTheme();applyFS();markCS();renderDua();renderCH();natPull();renderDB();renderAdv();renderVirt();if(D.brt)document.body.style.filter='brightness('+(D.brt/100)+')';$('anight').textContent='تلقائي: '+(D.anight?'تشغيل':'إيقاف');
 const _R1=R;R=function(){_R1();renderAdv();renderVirt()};
+function vibGo(p){if(!navigator.vibrate)return;const L=D.vibL||'normal';const k=L==='light'?0.4:L==='strong'?2.5:1;try{navigator.vibrate(Array.isArray(p)?p.map(x=>Math.round(x*k)):Math.round(p*k))}catch(e){}}
+const FBCFG={apiKey:"AIzaSyBID5XkcyKeEDEtYv-BgpPbLShin655lCc",authDomain:"arena-online-fdc1d.firebaseapp.com",projectId:"arena-online-fdc1d",storageBucket:"arena-online-fdc1d.firebasestorage.app",messagingSenderId:"94099249740",appId:"1:94099249740:web:49bab463a03f46156b32e9"};
+let FBdb=null,syncPushT=null,syncUnsub=null;
+function fbLoad(){if(window.firebase&&firebase.apps)return Promise.resolve();return new Promise((res,rej)=>{const urls=['app-compat','auth-compat','firestore-compat'].map(m=>'https://www.gstatic.com/firebasejs/10.12.0/firebase-'+m+'.js');let i=0;const nx=()=>{if(i>=urls.length)return res();const sc=document.createElement('script');sc.src=urls[i++];sc.onload=nx;sc.onerror=rej;document.head.appendChild(sc)};nx()})}
+function newCode(){const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';let c='';for(let i=0;i<6;i++)c+=A[Math.floor(Math.random()*A.length)];return c}
+async function syncOn(code){try{if(!D.devId){D.devId=Math.random().toString(36).slice(2)+Date.now().toString(36)}await fbLoad();if(!firebase.apps.length)firebase.initializeApp(FBCFG);await firebase.auth().signInAnonymously();FBdb=firebase.firestore();D.sync={code:code,on:true};sv();syncListen();syncPush(true);renderSync();toast('☁️ المزامنة شغالة — كودك '+code,3200)}catch(e){D.sync=null;sv();toast('⚠️ المزامنة محتاجة نت — جرب تاني');renderSync()}}
+function syncListen(){if(syncUnsub)syncUnsub();if(!D.sync||!D.sync.on||!FBdb)return;FBdb.collection('tasbeeh').doc(D.sync.code).onSnapshot(d=>{const r=d.data();if(!r||r.dev===D.devId)return;let ch=false;if((r.tot||0)>D.tot){D.tot=r.tot;ch=true}const rd=r.day||{};for(const k in rd){if((rd[k]||0)>(D.day[k]||0)){D.day[k]=rd[k];ch=true}}if(Array.isArray(r.db)&&r.db.length>(D.db||[]).length){D.db=r.db;ch=true}if(Array.isArray(r.ach)){const u=Array.from(new Set([...(D.ach||[]),...r.ach]));if(u.length!==(D.ach||[]).length){D.ach=u;ch=true}}if(ch){sv();R();renderDB()}},()=>{})}
+function syncPush(now){if(!D.sync||!D.sync.on||!FBdb)return;clearTimeout(syncPushT);syncPushT=setTimeout(()=>{try{const prev=D.lastTot||0;FBdb.collection('tasbeeh').doc(D.sync.code).set({tot:D.tot,day:D.day,db:D.db||[],ach:D.ach||[],dev:D.devId,upd:Date.now()},{merge:true}).catch(()=>{});
+ if(D.tot>prev){const delta=D.tot-prev;D.lastTot=D.tot;sv();FBdb.collection('tasbeeh').doc('_global').set({t:firebase.firestore.FieldValue.increment(delta)},{merge:true}).catch(()=>{})}}catch(e){}},now?0:2500)}
+function renderSync(){const el=$('syncl');if(!el)return;if(!D.sync||!D.sync.on){el.textContent='المزامنة مقفولة — ولّد كود هنا، واكتبه في موبايلك التاني عشان يتربطوا ببعض';const g=$('syncg');if(g)g.textContent='';return}
+ el.textContent='☁️ شغالة — كودك: '+D.sync.code+' (اكتبه في أي موبايل تاني)';
+ if(FBdb){FBdb.collection('tasbeeh').doc('_global').get().then(d=>{const g=$('syncg');if(g)g.textContent='🌍 عدّاد المسلمين المشترك: '+(((d.data()||{}).t)||0).toLocaleString('ar-EG')}).catch(()=>{})}}
+$('syncnew').onclick=()=>{syncOn(newCode())};
+$('syncjoin').onclick=()=>{const c=($('syncin').value||'').trim().toUpperCase();if(c.length<4){toast('اكتب الكود الأول');return}syncOn(c)};
+$('foc').onclick=()=>{document.body.classList.add('foc');$('focx').style.display='block';$('mxp').classList.remove('show')};
+$('focx').onclick=()=>{document.body.classList.remove('foc');$('focx').style.display='none'};
+const VLBL={off:'إيقاف',light:'خفيف',normal:'عادي',strong:'قوي'};
+$('vibc').onclick=()=>{const order=['off','light','normal','strong'];D.vibL=order[(order.indexOf(D.vibL||'normal')+1)%4];D.vib=D.vibL!=='off';sv();$('vibc').textContent='الاهتزاز: '+VLBL[D.vibL];if(D.vib)vibGo(40)};
+$('vibc').textContent='الاهتزاز: '+VLBL[D.vibL||'normal'];
+$('shk').onclick=()=>{D.shake=!D.shake;sv();$('shk').textContent='العدّ بالهز: '+(D.shake?'تشغيل 🤳':'إيقاف');if(D.shake)toast('هزّ الموبايل عشان تعدّ 📳')};
+$('shk').textContent='العدّ بالهز: '+(D.shake?'تشغيل 🤳':'إيقاف');
+let lastShake=0;window.addEventListener('devicemotion',e=>{if(!D.shake)return;const a=e.accelerationIncludingGravity;if(!a)return;const m=Math.abs(a.x||0)+Math.abs(a.y||0)+Math.abs(a.z||0);if(m>38&&Date.now()-lastShake>700){lastShake=Date.now();count()}});
+$('wk3').onclick=()=>{D.rem.push({id:7000003,nid:7000003,t:'22:30',what:'now',lbl:'🌙 ورد قبل النوم',snd:'chime',on:true});sv();renderRL();natSync();toast('✅ تذكير ورد النوم يوميا 10:30م')};
+$('wk4').onclick=()=>{D.rem.push({id:7000004,nid:7000004,t:'12:00',what:'now',lbl:'💰 صدقة يومية ولو بحجر',snd:'chime',on:true});sv();renderRL();natSync();toast('✅ تذكير الصدقة يوميا 12ظ')};
+const _countW=count;count=function(){const before=D.tot;_countW();if(Math.floor(D.tot/1000)>Math.floor(before/1000)){chime();toast('🌟 ما شاء الله! إجماليك وصل '+D.tot.toLocaleString('ar-EG')+' تسبيحة',3500)}syncPush()};
+$('tap').onclick=count;
+renderSync();if(D.sync&&D.sync.on){syncOn(D.sync.code)}
+
 const _R0=R;R=function(){_R0();renderLvl();if($('chm').style.display!=='none')renderChartM()};
 renderRS();renderRP();renderRL();natInit();
 checkAch(true);R();
