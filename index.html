@@ -61,6 +61,8 @@ h1{margin:0;font-size:22px}
 #toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#fde68a;color:#052e2b;font-weight:800;padding:12px 22px;border-radius:99px;opacity:0;transition:opacity .3s,top .3s;pointer-events:none;z-index:9;box-shadow:0 8px 24px #0008;max-width:88vw;text-align:center;font-size:15px}
 #toast.show{opacity:1;top:34px}
 body.foc>*:not(#ring):not(#txt):not(#focx):not(#toast):not(#rmbig){display:none!important}
+body.batt *{animation:none!important;transition:none!important}
+body.batt{filter:brightness(.75)!important}
 #stats{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:14px;flex-direction:column;gap:10px}
 #stats.show{display:flex}
 #chart{display:flex;align-items:flex-end;gap:6px;height:90px;direction:ltr}
@@ -125,6 +127,7 @@ body.foc>*:not(#ring):not(#txt):not(#focx):not(#toast):not(#rmbig){display:none!
 <div id="packs"></div>
 <div id="dua" style="display:none"></div>
 <div id="vrt" style="display:none;width:100%;max-width:360px;font-size:11px;opacity:.75;text-align:center;line-height:1.6"></div>
+<div id="dedic" style="display:none;width:100%;max-width:360px;font-size:12px;color:var(--gold);text-align:center;opacity:.9"></div>
 <div id="zk"></div><div id="txt"></div>
 <div id="ring"><div id="beads"></div><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#ffffff22" stroke-width="5"/><circle id="pr" cx="50" cy="50" r="46" fill="none" stroke="#fde68a" stroke-width="5" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"/></svg><button id="tap">0<small>اضغط للتسبيح</small></button></div>
 <div class="row"><div class="box"><b id="rd">0</b><span>الجولات</span></div><div class="box" id="dayBox"><b id="td">0</b><span id="tdl">إجمالي اليوم</span></div><div class="box"><b id="tt">0</b><span>الإجمالي</span></div></div>
@@ -139,6 +142,7 @@ body.foc>*:not(#ring):not(#txt):not(#focx):not(#toast):not(#rmbig){display:none!
 <div id="mxp">
 <div class="ttl">🎨 المظهر</div>
 <div class="trow"><button class="tbtn" data-th="teal">زمردي</button><button class="tbtn" data-th="night">ليلي</button><button class="tbtn" data-th="purple">بنفسجي</button><button class="tbtn" data-th="sky">سماوي</button><button class="tbtn" data-th="gold">ذهبي</button></div>
+<div class="trow"><button class="tbtn" data-th="sea">بحر 🌊</button><button class="tbtn" data-th="sunset">غروب 🌇</button><button class="tbtn" data-th="forest">غابة 🌲</button><button class="tbtn" data-th="ramadan">رمضان 🌙</button></div>
 <div class="ttl">🔠 حجم الخط</div>
 <div class="trow"><button class="tbtn" data-fs="0.9">صغير</button><button class="tbtn" data-fs="1">وسط</button><button class="tbtn" data-fs="1.15">كبير</button><button class="tbtn" data-fs="1.3">كبير جدًا</button></div>
 <div class="ttl">🖱 صوت العدّ</div>
@@ -185,6 +189,17 @@ body.foc>*:not(#ring):not(#txt):not(#focx):not(#toast):not(#rmbig){display:none!
 <div class="trow"><button class="tbtn" id="shk" style="flex:1">العدّ بالهز: إيقاف</button></div>
 <div class="ttl">🤲 تذكيرات يومية جاهزة</div>
 <div class="trow"><button class="tbtn" id="wk3" style="flex:1">ورد قبل النوم (10:30م)</button><button class="tbtn" id="wk4" style="flex:1">صدقة يومية (12ظ)</button></div>
+<div class="ttl">🎁 إهداء الثواب</div>
+<div class="trow"><input id="dedicin" placeholder="اسم من تهديه ثواب التسبيح" style="flex:1"><button class="tbtn" id="dedicb">إهداء</button></div>
+<div class="ttl">🎵 خلفية صوتية</div>
+<div class="trow"><select id="bgs" style="flex:1;padding:10px;border-radius:10px;border:0;font-size:15px;font-family:inherit"><option value="off">صامت</option><option value="rain.mp3">🌧 مطر</option><option value="birds.mp3">🐦 عصافير</option><option value="water.mp3">💧 ميه جارية</option></select></div>
+<div class="ttl">🔋 توفير البطارية</div>
+<div class="trow"><button class="tbtn" id="batt" style="flex:1">وضع التوفير: إيقاف</button></div>
+<div class="ttl">🤲 دعاء سريع</div>
+<div class="trow"><button class="tbtn" id="qdua" style="flex:1">دعاء الكرب (لا إله إلا أنت...)</button></div>
+<div class="ttl">🗄 مساحة التخزين</div>
+<div id="stor" style="font-size:12px;opacity:.85;text-align:center"></div>
+<div class="trow"><button class="tbtn" id="clr" style="flex:1">مسح الأيام الأقدم من 90 يوم</button></div>
 <div class="ttl">🔒 خصوصيتك</div>
 <div style="font-size:12px;opacity:.8;text-align:center;line-height:1.8">كل بياناتك محفوظة على جهازك. ولو فعّلت المزامنة، بتتخزن نسخة من عدّاداتك بس (من غير أي بيانات شخصية) في قاعدة Firebase بتاعتك تحت الكود السري اللي اخترته — ومفيش أي حاجة تانية بتتبعت.</div>
 </div>
@@ -275,7 +290,42 @@ prayer:{name:'بعد الصلاة',icon:'🕌',items:[
  {n:'سبحان الله',g:33},
  {n:'الحمد لله',g:33},
  {n:'الله أكبر',g:34},
- {n:'لا إله إلا الله وحده لا شريك له',g:1}]}
+ {n:'لا إله إلا الله وحده لا شريك له',g:1}]},
+wudu:{name:'أذكار الوضوء',icon:'💧',items:[
+ {n:'بسم الله',g:1},
+ {n:'أشهد أن لا إله إلا الله وحده لا شريك له، وأشهد أن محمدا عبده ورسوله',g:1},
+ {n:'اللهم اجعلني من التوابين واجعلني من المتطهرين',g:1},
+ {n:'سبحانك اللهم وبحمدك، أشهد أن لا إله إلا أنت، أستغفرك وأتوب إليك',g:1}]},
+travel:{name:'أذكار السفر',icon:'🚗',items:[
+ {n:'بسم الله، توكلت على الله، ولا حول ولا قوة إلا بالله',g:1},
+ {n:'سبحان الذي سخر لنا هذا وما كنا له مقرنين، وإنا إلى ربنا لمنقلبون',g:1},
+ {n:'اللهم إنا نسألك في سفرنا هذا البر والتقوى، ومن العمل ما ترضى',g:1},
+ {n:'اللهم هون علينا سفرنا هذا واطوعنا المسافة',g:1},
+ {n:'أعوذ بكلمات الله التامات من شر ما خلق',g:3}]},
+food:{name:'أذكار الطعام',icon:'🍽',items:[
+ {n:'بسم الله',g:1},
+ {n:'بسم الله في أوله وآخره',g:1},
+ {n:'الحمد لله الذي أطعمنا وسقانا وكفانا وآوانا، فكم ممن لا كافي له ولا مؤوي',g:1},
+ {n:'اللهم بارك لنا فيما رزقتنا وقنا عذاب النار',g:1}]},
+home:{name:'أذكار البيت',icon:'🏠',items:[
+ {n:'بسم الله، توكلت على الله، لا حول ولا قوة إلا بالله',g:1},
+ {n:'بسم الله ولجنا، وبسم الله خرجنا، وعلى ربنا توكلنا',g:1},
+ {n:'اللهم إني أسألك خير المولج وخير المخرج',g:1}]},
+mosque:{name:'أذكار المسجد',icon:'🕌',items:[
+ {n:'أعوذ بالله العظيم وبوجهه الكريم وسلطانه القديم من الشيطان الرجيم',g:1},
+ {n:'بسم الله، والصلاة والسلام على رسول الله، اللهم افتح لي أبواب رحمتك',g:1},
+ {n:'اللهم اجعلني فيها من المقبلين، اللهم اجعلني فيها من المسبحين',g:1},
+ {n:'اللهم إني أسألك من فضلك ورحمتك',g:1}]},
+karb:{name:'دعاء الكرب والهم',icon:'🤲',items:[
+ {n:'لا إله إلا أنت سبحانك إني كنت من الظالمين',g:1},
+ {n:'اللهم رب السماوات السبع ورب العرش العظيم، اقض عنا الدين وأغننا من الفقر',g:1},
+ {n:'لا إله إلا الله العظيم الحليم، لا إله إلا الله رب العرش العظيم، لا إله إلا الله رب السماوات ورب الأرض ورب العرش الكريم',g:1},
+ {n:'حسبنا الله ونعم الوكيل',g:7},
+ {n:'يا حي يا قيوم برحمتك أستغيث',g:3}]},
+eid:{name:'تكبيرات العيد',icon:'🎉',items:[
+ {n:'الله أكبر، الله أكبر، لا إله إلا الله، والله أكبر، الله أكبر، ولله الحمد',g:1},
+ {n:'الله أكبر كبيرا، والحمد لله كثيرا، وسبحان الله بكرة وأصيلا',g:3},
+ {n:'اللهم صل وسلم على نبينا محمد',g:10}]}
 };
 const ACH=[
  {id:'round1',icon:'🔁',t:'أول جولة',ok:()=>totalRounds()>=1},
@@ -465,7 +515,7 @@ setInterval(checkRem,15000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkRem()});
 $('remhint').textContent=NAT?'⏰ التنبيه بيرن في معاده بالظبط حتى لو التطبيق مقفول خالص، زي منبّه الموبايل بالظبط. اختار الوقت والذكر والصوت لكل تنبيه.':'⏰ تنبيه يومي بصوت من اختيارك واهتزاز. مهم بصراحة: في المتصفح التنبيه بيرن طالما التطبيق مفتوح (حتى لو في الخلفية) — لو قفلته خالص مفيش تنبيه. عشان يرن والمقفول، نزّل نسخة التطبيق من زرار «تثبيت التطبيق» أو الـ APK.';
 function inQuiet(t){if(!D.qs||!D.qe)return false;if(D.qs===D.qe)return false;const x=t||pad(new Date().getHours())+':'+pad(new Date().getMinutes());if(D.qs<D.qe)return x>=D.qs&&x<D.qe;return x>=D.qs||x<D.qe}
-const THEMES={teal:{},night:{'--bg1':'#111827','--bg2':'#000000','--acc':'#4b5563','--acc2':'#6b7280','--gold':'#fbbf24'},purple:{'--bg1':'#7c3aed','--bg2':'#2e1065','--acc':'#c4b5fd','--acc2':'#a78bfa','--gold':'#fde68a'},sky:{'--bg1':'#0284c7','--bg2':'#082f49','--acc':'#7dd3fc','--acc2':'#38bdf8','--gold':'#fef08a'},gold:{'--bg1':'#b45309','--bg2':'#451a03','--acc':'#fcd34d','--acc2':'#fbbf24','--gold':'#fef3c7'}};
+const THEMES={teal:{},night:{'--bg1':'#111827','--bg2':'#000000','--acc':'#4b5563','--acc2':'#6b7280','--gold':'#fbbf24'},purple:{'--bg1':'#7c3aed','--bg2':'#2e1065','--acc':'#c4b5fd','--acc2':'#a78bfa','--gold':'#fde68a'},sky:{'--bg1':'#0284c7','--bg2':'#082f49','--acc':'#7dd3fc','--acc2':'#38bdf8','--gold':'#fef08a'},gold:{'--bg1':'#b45309','--bg2':'#451a03','--acc':'#fcd34d','--acc2':'#fbbf24','--gold':'#fef3c7'},sea:{'--bg1':'#0e7490','--bg2':'#164e63','--acc':'#67e8f9','--acc2':'#22d3ee','--gold':'#fef9c3'},sunset:{'--bg1':'#c2410c','--bg2':'#431407','--acc':'#fdba74','--acc2':'#fb923c','--gold':'#fde68a'},forest:{'--bg1':'#166534','--bg2':'#052e16','--acc':'#86efac','--acc2':'#4ade80','--gold':'#fef08a'},ramadan:{'--bg1':'#4c1d95','--bg2':'#0f172a','--acc':'#c4b5fd','--acc2':'#a78bfa','--gold':'#fcd34d'}};
 function applyTheme(){const th=THEMES[D.theme]||{};const r=document.documentElement;['--bg1','--bg2','--acc','--acc2','--gold'].forEach(k=>{r.style.setProperty(k,th[k]||'')});document.querySelectorAll('[data-th]').forEach(b=>b.classList.toggle('on',b.dataset.th===(D.theme||'teal')))}
 document.querySelectorAll('[data-th]').forEach(b=>b.onclick=()=>{D.theme=b.dataset.th==='teal'?'':b.dataset.th;sv();applyTheme()});
 document.querySelectorAll('[data-fs]').forEach(b=>b.onclick=()=>{D.fs=b.dataset.fs;sv();applyFS()});
@@ -521,8 +571,8 @@ window.extQuick=function(){$('smp').classList.add('show');smR()};
 if(/[?&]quick=1/.test(location.search))setTimeout(()=>window.extQuick(),400);
 const VIRT={'سبحان الله':'فضلها: كلمة خفيفة على اللسان، ثقيلة في الميزان','الحمد لله':'فضلها: خير الدعاء الحمد لله','الله أكبر':'فضلها: من أحب الكلام إلى الله','لا إله إلا الله':'فضلها: أفضل الذكر','أستغفر الله':'فضلها: من لزم الاستغفار جعل الله له من كل هم فرجا','اللهم صل على محمد':'فضلها: من صلى علي واحدة صلى الله عليه عشرا','سبحان الله وبحمده':'فضلها: من قالها مئة مرة غفرت ذنوبه ولو كانت زبد البحر','أعوذ بالله من الشيطان الرجيم':'فضلها: تعوذ النبي ﷺ قبل القراءة'};
 function renderVirt(){const el=$('vrt');if(!el)return;const z=S().z[S().i];const v=z&&VIRT[z.n];el.style.display=v?'block':'none';if(v)el.textContent='💡 '+v}
-const DAILY=['🤲 دعاء اليوم|'+DUAS.join('|'),'📜 حديث اليوم|من ذكر الله هنيئا له بالجنة|خيركم من تعلم القرآن وعلمه|الدعاء هو العبادة|المسلم من سلم الناس من لسانه ويده|الكلمة الطيبة صدقة|من غدى إلى المسجد أعد الله له نزلا|الطهور نصف الإيمان|إن الله يحب التائبين ويحب المتطهرين|البشاشة في وجه أخيك صدقة|لا تحقرن من المعروف شيئا|من سلك طريقا يلتمس فيه علما سهل الله له طريقا إلى الجنة|الدين النصيحة|خير الأعمال أدومها وإن قل|المؤمن للمؤمن كالبنيان يشد بعضه بعضا|من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت|تبسمك في وجه أخيك صدقة|اللهم إني أعوذ بك من شر سمعي وشر بصري|من صلى علي صلاة واحدة صلى الله عليه عشرا|أحب الأسماء إلى الله عبد الله وعبد الرحمن|الدعاء سلاح المؤمن|من قرأ حرفا من كتاب الله فله حسنة|الاستغفار دواء الذنوب|من قال سبحان الله وبحمده مئة مرة غفرت ذنوبه|رضا الله في طاعة الوالدين|الصبر ضياء|القرآن شفيع يوم القيامة|من تبع غضبه أدخله الله في عذاب جهنم|من ترك شيئا لله عوضه الله خيرا منه|التوكل على الله نصف الدين|خير الصدقة ما كان عن ظهر غنى|اللهم اجعلنا من الذاكرين الشاكرين','🌙 آية اليوم|فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ|أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ|وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا|إِنَّ اللَّهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ|وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا|وَقُل رَّبِّ زِدْنِي عِلْمًا|فَإِنَّ مَعَ الْعُسْرِ يُسْرًا|وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ|إِنَّ اللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ|وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ'];
-const _rd0=renderDua;renderDua=function(){const el=$('dua');if(!el)return;const doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5);const kind=doy%3;const parts=DAILY[kind].split('|');const t=parts[0]+': '+parts[(doy%(parts.length-1))+1];
+const DAILY=['🤲 دعاء اليوم|'+DUAS.join('|'),'📜 حديث اليوم|من ذكر الله هنيئا له بالجنة|خيركم من تعلم القرآن وعلمه|الدعاء هو العبادة|المسلم من سلم الناس من لسانه ويده|الكلمة الطيبة صدقة|من غدى إلى المسجد أعد الله له نزلا|الطهور نصف الإيمان|إن الله يحب التائبين ويحب المتطهرين|البشاشة في وجه أخيك صدقة|لا تحقرن من المعروف شيئا|من سلك طريقا يلتمس فيه علما سهل الله له طريقا إلى الجنة|الدين النصيحة|خير الأعمال أدومها وإن قل|المؤمن للمؤمن كالبنيان يشد بعضه بعضا|من كان يؤمن بالله واليوم الآخر فليقل خيرا أو ليصمت|تبسمك في وجه أخيك صدقة|اللهم إني أعوذ بك من شر سمعي وشر بصري|من صلى علي صلاة واحدة صلى الله عليه عشرا|أحب الأسماء إلى الله عبد الله وعبد الرحمن|الدعاء سلاح المؤمن|من قرأ حرفا من كتاب الله فله حسنة|الاستغفار دواء الذنوب|من قال سبحان الله وبحمده مئة مرة غفرت ذنوبه|رضا الله في طاعة الوالدين|الصبر ضياء|القرآن شفيع يوم القيامة|من تبع غضبه أدخله الله في عذاب جهنم|من ترك شيئا لله عوضه الله خيرا منه|التوكل على الله نصف الدين|خير الصدقة ما كان عن ظهر غنى|اللهم اجعلنا من الذاكرين الشاكرين','❓ سؤال اليوم|سؤال: كم عدد أبواب الجنة؟ الجواب: ثمانية|سؤال: ما أول سورة نزلت؟ الجواب: العلق|سؤال: كم عدد أجزاء القرآن؟ الجواب: ثلاثون|سؤال: ما أطول سورة في القرآن؟ الجواب: البقرة|سؤال: كم عدد سور القرآن؟ الجواب: 114|سؤال: ما السورة التي لا تبدأ بالبسملة؟ الجواب: التوبة|سؤال: كم عدد أسماء الله الحسنى؟ الجواب: 99|سؤال: ما أول مسجد بُني؟ الجواب: المسجد الحرام|سؤال: كم عدد أبواب النار؟ الجواب: سبعة|سؤال: ما السورة التي تسمى قلب القرآن؟ الجواب: يس','🌙 آية اليوم|فَاذْكُرُونِي أَذْكُرْكُمْ وَاشْكُرُوا لِي وَلَا تَكْفُرُونِ|أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ|وَرَتِّلِ الْقُرْآنَ تَرْتِيلًا|إِنَّ اللَّهَ وَمَلَائِكَتَهُ يُصَلُّونَ عَلَى النَّبِيِّ|وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا|وَقُل رَّبِّ زِدْنِي عِلْمًا|فَإِنَّ مَعَ الْعُسْرِ يُسْرًا|وَهُوَ مَعَكُمْ أَيْنَ مَا كُنتُمْ|إِنَّ اللَّهَ لَا يُغَيِّرُ مَا بِقَوْمٍ حَتَّىٰ يُغَيِّرُوا مَا بِأَنفُسِهِمْ|وَعَسَىٰ أَن تَكْرَهُوا شَيْئًا وَهُوَ خَيْرٌ لَّكُمْ'];
+const _rd0=renderDua;renderDua=function(){const el=$('dua');if(!el)return;const doy=Math.floor((Date.now()-new Date(new Date().getFullYear(),0,0))/864e5);const kind=doy%4;const parts=DAILY[kind].split('|');const t=parts[0]+': '+parts[(doy%(parts.length-1))+1];
  let hj='';try{hj=' · 📅 '+new Intl.DateTimeFormat('ar-SA-islamic',{day:'numeric',month:'long',year:'numeric'}).format(new Date())}catch(e){}
  el.textContent=t+hj;el.style.display='block';el.onclick=()=>{try{navigator.clipboard.writeText(parts[(doy%(parts.length-1))+1]);toast('اتنسخ 📋')}catch(e){}}};
 $('un').onclick=()=>{const s=S(),i=s.i;if((s.c[i]||0)>0){s.c[i]--;D.tot=Math.max(0,(D.tot||0)-1);const td=D.day[today()]||0;if(td>0)D.day[today()]=td-1;if(D.ch&&D.ch.on&&D.ch.c>0)D.ch.c--;sv();R();toast('اتراجعنا عن عدّة ↩️')}else toast('العداد صفر')};
@@ -573,6 +623,16 @@ $('wk4').onclick=()=>{D.rem.push({id:7000004,nid:7000004,t:'12:00',what:'now',lb
 const _countW=count;count=function(){const before=D.tot;_countW();if(Math.floor(D.tot/1000)>Math.floor(before/1000)){chime();toast('🌟 ما شاء الله! إجماليك وصل '+D.tot.toLocaleString('ar-EG')+' تسبيحة',3500)}syncPush()};
 $('tap').onclick=count;
 renderSync();if(D.sync&&D.sync.on){syncOn(D.sync.code)}
+$('dedicb').onclick=()=>{const v=($('dedicin').value||'').trim();D.dedic=v;sv();const d=$('dedic');d.style.display=v?'block':'none';d.textContent=v?('🎁 ثواب الذكر مهدى لـ '+v+' 🤍'):'';toast(v?('إهداء لـ '+v+' — تقبل الله'):'اتشال الإهداء')};
+if(D.dedic){const d=$('dedic');d.style.display='block';d.textContent='🎁 ثواب الذكر مهدى لـ '+D.dedic+' 🤍';$('dedicin').value=D.dedic}
+let bgA=null;$('bgs').onchange=()=>{const v=$('bgs').value;D.bgs=v;sv();if(bgA){bgA.pause();bgA=null}if(v!=='off'){bgA=new Audio(v);bgA.loop=true;bgA.volume=.5;bgA.play().catch(()=>toast('دوس تاني عشان الصوت يشتغل'));}};
+$('bgs').value=D.bgs||'off';
+$('batt').onclick=()=>{D.batt=!D.batt;sv();document.body.classList.toggle('batt',!!D.batt);$('batt').textContent='وضع التوفير: '+(D.batt?'تشغيل 🔋':'إيقاف')};
+if(D.batt){document.body.classList.add('batt');$('batt').textContent='وضع التوفير: تشغيل 🔋'}
+$('qdua').onclick=()=>{lastRem=null;$('rmbmsg').textContent='دعاء الكرب: لا إله إلا أنت سبحانك إني كنت من الظالمين — قال رسول الله ﷺ: دعوة ذي النون لم يدعها مؤمن في شيء إلا استجيب له';$('rmbig').classList.add('show')};
+(function storR(){const el=$('stor');if(!el)return;let sz=0;try{sz=(localStorage.getItem('tasbeeh7')||'').length}catch(e){}el.textContent='بياناتك المحفوظة على الجهاز: '+(sz/1024).toFixed(1)+' كيلوبايت'})();
+$('clr').onclick=()=>{const cut=Date.now()-90*864e5;let n=0;for(const k in (D.day||{})){if(new Date(k).getTime()<cut){delete D.day[k];n++}}sv();toast(n>0?('اتمسح '+n+' يوم قديم'):'مفيش حاجة قديمة');R()};
+
 
 const _R0=R;R=function(){_R0();renderLvl();if($('chm').style.display!=='none')renderChartM()};
 renderRS();renderRP();renderRL();natInit();
