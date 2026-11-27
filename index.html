@@ -3,13 +3,27 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;user-select:none}
 body{margin:0;min-height:100vh;background:radial-gradient(circle at 50% 30%,#0f766e,#052e2b 70%);color:#ecfeff;font-family:system-ui,"Segoe UI",Tahoma,sans-serif;display:flex;flex-direction:column;align-items:center;padding:16px;gap:14px}
 h1{margin:0;font-size:22px}
+#pbar{display:flex;align-items:center;gap:8px;width:100%;max-width:360px}
+#pbtn{padding:8px 12px;border-radius:99px;border:1px solid #5eead4;background:#5eead41a;color:#ccfbf1;font-size:14px;font-weight:700;white-space:nowrap;font-family:inherit}
+#pprog{flex:1;height:8px;border-radius:99px;background:#ffffff22;overflow:hidden;display:none}
+#pprog.show{display:block}
+#pfill{height:100%;width:0;background:linear-gradient(90deg,#5eead4,#fde68a);transition:width .3s}
+#pcnt{font-size:12px;opacity:.9;display:none;white-space:nowrap}
+#pcnt.show{display:block}
+#packs{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:10px;flex-direction:column;gap:8px}
+#packs.show{display:flex}
+.pk{display:flex;align-items:center;gap:8px;padding:11px;border-radius:12px;background:#ffffff14;border:1px solid #ffffff1a;color:#fff;font-size:15px;text-align:right;font-family:inherit}
+.pk.on{outline:2px solid #5eead4;background:#5eead41f}
+.pk .nm{flex:1}
+.pk .pg{font-size:12px;opacity:.8}
+.pk .ok{color:#fde68a;font-weight:800}
 #zk{display:flex;gap:8px;overflow-x:auto;width:100%;padding:2px}
-.ch{padding:8px 14px;border-radius:99px;border:1px solid #5eead4;background:#0000;color:#ccfbf1;white-space:nowrap;font-size:15px}
+.ch{padding:8px 14px;border-radius:99px;border:1px solid #5eead4;background:#0000;color:#ccfbf1;white-space:nowrap;font-size:15px;font-family:inherit}
 .ch.on{background:#5eead4;color:#042f2e;font-weight:800}
-#txt{font-size:30px;font-weight:800;text-align:center;min-height:44px;color:#fde68a}
+#txt{font-size:30px;font-weight:800;text-align:center;min-height:44px;color:#fde68a;line-height:1.5;max-width:360px}
 #ring{position:relative;width:min(78vw,320px);aspect-ratio:1}
 #ring svg{width:100%;height:100%;transform:rotate(-90deg)}
-#tap{position:absolute;inset:14%;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#2dd4bf,#0d9488 60%,#115e59);color:#fff;font-size:68px;font-weight:800;box-shadow:0 10px 30px #0009,inset 0 -8px 20px #0004;transition:transform .08s}
+#tap{position:absolute;inset:14%;border-radius:50%;border:0;background:radial-gradient(circle at 35% 30%,#2dd4bf,#0d9488 60%,#115e59);color:#fff;font-size:68px;font-weight:800;box-shadow:0 10px 30px #0009,inset 0 -8px 20px #0004;transition:transform .08s;font-family:inherit}
 #tap:active{transform:scale(.94)}
 #tap small{display:block;font-size:15px;font-weight:400;opacity:.85}
 #ring.flash svg circle:last-child{animation:fl .8s}
@@ -18,11 +32,11 @@ h1{margin:0;font-size:22px}
 .box{flex:1;background:#ffffff14;border-radius:14px;padding:10px;text-align:center}
 .box b{display:block;font-size:22px;color:#fde68a}.box span{font-size:12px;opacity:.8}
 .box.done{background:#fde68a33;outline:2px solid #fde68a}
-.btn{flex:1;padding:12px;border-radius:12px;border:0;background:#ffffff1f;color:#fff;font-size:15px}
+.btn{flex:1;padding:12px 6px;border-radius:12px;border:0;background:#ffffff1f;color:#fff;font-size:14px;font-family:inherit}
 #set{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:12px;gap:8px;flex-direction:column}
 #set.show{display:flex}#set input{padding:10px;border-radius:10px;border:0;font-size:16px}
 #set .del{background:#7f1d1d}
-#toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#fde68a;color:#052e2b;font-weight:800;padding:12px 22px;border-radius:99px;opacity:0;transition:opacity .3s,top .3s;pointer-events:none;z-index:9;box-shadow:0 8px 24px #0008}
+#toast{position:fixed;top:18px;left:50%;transform:translateX(-50%);background:#fde68a;color:#052e2b;font-weight:800;padding:12px 22px;border-radius:99px;opacity:0;transition:opacity .3s,top .3s;pointer-events:none;z-index:9;box-shadow:0 8px 24px #0008;max-width:88vw;text-align:center;font-size:15px}
 #toast.show{opacity:1;top:34px}
 #stats{display:none;width:100%;max-width:360px;background:#0006;border-radius:14px;padding:14px;flex-direction:column;gap:10px}
 #stats.show{display:flex}
@@ -34,18 +48,28 @@ h1{margin:0;font-size:22px}
 .srow{display:flex;gap:10px}
 .sbox{flex:1;background:#ffffff14;border-radius:12px;padding:8px;text-align:center}
 .sbox b{display:block;font-size:19px;color:#fde68a}.sbox span{font-size:11px;opacity:.8}
-</style><meta name="description" content="مسبحة إلكترونية بسيطة وسريعة بتحفظ عدّك وبتشتغل بدون نت. مجانية ومن غير إعلانات.">
+#heat{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;direction:ltr}
+.hc{aspect-ratio:1;border-radius:5px;background:#ffffff12}
+.hc.now{outline:2px solid #fde68a;outline-offset:1px}
+#badges{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.bd{background:#ffffff12;border-radius:12px;padding:9px 5px;text-align:center;font-size:11px;opacity:.42;line-height:1.4}
+.bd.on{opacity:1;background:#fde68a26;outline:1px solid #fde68a80}
+.bd i{display:block;font-size:21px;font-style:normal;margin-bottom:3px}
+.ttl{font-size:13px;opacity:.85;text-align:center}
+#mkt-share{text-align:center;margin:22px auto 30px;max-width:480px;padding:0 14px;font-family:system-ui,'Segoe UI',Tahoma,sans-serif;color:#9aa3b2;font-size:13px;line-height:1.9}
+#mkt-btn{background:#0f766e;color:#fff;border:0;border-radius:12px;padding:11px 22px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer}
+</style><meta name="description" content="مسبحة إلكترونية بسيطة وسريعة بتحفظ عدّك وبتشتغل بدون نت، مع أذكار الصباح والمساء والنوم وبعد الصلاة وشارات إنجاز. مجانية ومن غير إعلانات.">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="ar_EG">
 <meta property="og:title" content="المسبحة — عدّاد تسبيح بسيط">
-<meta property="og:description" content="مسبحة إلكترونية بسيطة وسريعة بتحفظ عدّك وبتشتغل بدون نت. مجانية ومن غير إعلانات.">
+<meta property="og:description" content="مسبحة إلكترونية بسيطة وسريعة بتحفظ عدّك وبتشتغل بدون نت، مع أذكار الصباح والمساء والنوم وبعد الصلاة وشارات إنجاز. مجانية ومن غير إعلانات.">
 <meta property="og:url" content="https://mohamedelsayed16399-bit.github.io/tasbeeh-app-ar/">
 <meta property="og:image" content="https://mohamedelsayed16399-bit.github.io/tasbeeh-app-ar/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="المسبحة — عدّاد تسبيح بسيط">
-<meta name="twitter:description" content="مسبحة إلكترونية بسيطة وسريعة بتحفظ عدّك وبتشتغل بدون نت. مجانية ومن غير إعلانات.">
+<meta name="twitter:description" content="مسبحة إلكترونية بسيطة وسريعة بتحفظ عدّك وبتشتغل بدون نت، مع أذكار الصباح والمساء والنوم وبعد الصلاة وشارات إنجاز.">
 <meta name="twitter:image" content="https://mohamedelsayed16399-bit.github.io/tasbeeh-app-ar/og.png">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
@@ -55,52 +79,159 @@ h1{margin:0;font-size:22px}
 </head><body>
 <div id="toast"></div>
 <h1>📿 المسبحة</h1>
+<div id="pbar"><button id="pbtn">📿 المسبحة العادية ▾</button><div id="pprog"><div id="pfill"></div></div><span id="pcnt">0/0</span></div>
+<div id="packs"></div>
 <div id="zk"></div><div id="txt"></div>
 <div id="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="46" fill="none" stroke="#ffffff22" stroke-width="5"/><circle id="pr" cx="50" cy="50" r="46" fill="none" stroke="#fde68a" stroke-width="5" stroke-linecap="round" stroke-dasharray="289" stroke-dashoffset="289"/></svg><button id="tap">0<small>اضغط للتسبيح</small></button></div>
 <div class="row"><div class="box"><b id="rd">0</b><span>الجولات</span></div><div class="box" id="dayBox"><b id="td">0</b><span id="tdl">إجمالي اليوم</span></div><div class="box"><b id="tt">0</b><span>الإجمالي</span></div></div>
 <div class="row"><button class="btn" id="rs">تصفير</button><button class="btn" id="vb">اهتزاز: تشغيل</button><button class="btn" id="ad">ذكر جديد</button></div>
-<div class="row"><button class="btn" id="st">📊 إحصائياتي</button><button class="btn" id="sn">صوت: تشغيل</button><button class="btn" id="au">انتقال تلقائي: إيقاف</button></div>
+<div class="row"><button class="btn" id="st">📊 إحصائياتي</button><button class="btn" id="sn">صوت: تشغيل</button><button class="btn" id="au">تلقائي: إيقاف</button></div>
 <div id="set"><input id="nn" placeholder="نص الذكر"><input id="ng" type="number" placeholder="العدد المستهدف (مثال 33)"><button class="btn" id="sv">إضافة</button><button class="btn del" id="dz">🗑 حذف الذكر الحالي</button><input id="goal" type="number" placeholder="هدفك اليومي (مثال 100)"><button class="btn" id="gs">حفظ الهدف اليومي</button></div>
 <div id="stats">
 <div class="srow"><div class="sbox"><b id="stk">0</b><span>🔥 سلسلة الأيام</span></div><div class="sbox"><b id="bst">0</b><span>أفضل يوم</span></div><div class="sbox"><b id="trd">0</b><span>كل الجولات</span></div></div>
-<div style="font-size:13px;opacity:.85;text-align:center">آخر 7 أيام</div>
+<div class="ttl">آخر 7 أيام</div>
 <div id="chart"></div>
+<div class="ttl">آخر 30 يوم</div>
+<div id="heat"></div>
+<div class="ttl">🏅 شاراتك <span id="achn">0/12</span></div>
+<div id="badges"></div>
 </div>
 <script>
-const $=i=>document.getElementById(i),today=()=>new Date().toISOString().slice(0,10);
-const dstr=d=>{const x=new Date();x.setDate(x.getDate()-d);return x.toISOString().slice(0,10)};
-let D=JSON.parse(localStorage.getItem('tasbeeh6')||'null')||{z:[{n:'سبحان الله',g:33},{n:'الحمد لله',g:33},{n:'الله أكبر',g:34},{n:'لا إله إلا الله',g:100},{n:'أستغفر الله',g:100},{n:'اللهم صل على محمد',g:100}],i:0,c:{},r:{},tot:0,day:{},vib:true};
-if(D.snd===undefined)D.snd=true;if(D.auto===undefined)D.auto=false;if(!D.goal)D.goal=0;
-const sv=()=>localStorage.setItem('tasbeeh6',JSON.stringify(D));
+const $=i=>document.getElementById(i),pad=n=>String(n).padStart(2,'0');
+const ds=d=>{const x=new Date();x.setDate(x.getDate()-d);return x.getFullYear()+'-'+pad(x.getMonth()+1)+'-'+pad(x.getDate())};
+const today=()=>ds(0);
+const DEFZ=[{n:'سبحان الله',g:33},{n:'الحمد لله',g:33},{n:'الله أكبر',g:34},{n:'لا إله إلا الله',g:100},{n:'أستغفر الله',g:100},{n:'اللهم صل على محمد',g:100}];
+const PACKS={
+custom:{name:'المسبحة العادية',icon:'📿'},
+morning:{name:'أذكار الصباح',icon:'🌅',items:[
+ {n:'أعوذ بالله من الشيطان الرجيم',g:3},
+ {n:'سبحان الله وبحمده',g:100},
+ {n:'اللهم بك أصبحنا وبك أمسينا',g:1},
+ {n:'أستغفر الله وأتوب إليه',g:100},
+ {n:'اللهم صل على محمد',g:10},
+ {n:'لا إله إلا الله وحده لا شريك له',g:10},
+ {n:'حسبي الله ونعم الوكيل',g:7}]},
+evening:{name:'أذكار المساء',icon:'🌙',items:[
+ {n:'أعوذ بالله من الشيطان الرجيم',g:3},
+ {n:'سبحان الله وبحمده',g:100},
+ {n:'اللهم بك أمسينا وبك أصبحنا',g:1},
+ {n:'أستغفر الله وأتوب إليه',g:100},
+ {n:'اللهم صل على محمد',g:10},
+ {n:'لا إله إلا الله وحده لا شريك له',g:10},
+ {n:'بسم الله الذي لا يضر مع اسمه شيء',g:3}]},
+sleep:{name:'أذكار النوم',icon:'😴',items:[
+ {n:'آية الكرسي',g:1},
+ {n:'سبحان الله',g:33},
+ {n:'الحمد لله',g:33},
+ {n:'الله أكبر',g:34},
+ {n:'اللهم باسمك أموت وأحيا',g:1},
+ {n:'أستغفر الله',g:100}]},
+prayer:{name:'بعد الصلاة',icon:'🕌',items:[
+ {n:'أستغفر الله',g:3},
+ {n:'اللهم أنت السلام ومنك السلام',g:1},
+ {n:'سبحان الله',g:33},
+ {n:'الحمد لله',g:33},
+ {n:'الله أكبر',g:34},
+ {n:'لا إله إلا الله وحده لا شريك له',g:1}]}
+};
+const ACH=[
+ {id:'round1',icon:'🔁',t:'أول جولة',ok:()=>totalRounds()>=1},
+ {id:'t100',icon:'💯',t:'١٠٠ تسبيحة',ok:()=>D.tot>=100},
+ {id:'t1000',icon:'🔢',t:'١٠٠٠ تسبيحة',ok:()=>D.tot>=1000},
+ {id:'t10000',icon:'🏆',t:'١٠ آلاف',ok:()=>D.tot>=10000},
+ {id:'s3',icon:'🔥',t:'٣ أيام ورا بعض',ok:()=>streak()>=3},
+ {id:'s7',icon:'⚡',t:'أسبوع كامل',ok:()=>streak()>=7},
+ {id:'s30',icon:'🌟',t:'شهر كامل',ok:()=>streak()>=30},
+ {id:'goal',icon:'🎯',t:'هدف اليوم',ok:()=>D.goal>0&&(D.day[today()]||0)>=D.goal},
+ {id:'pm',icon:'🌅',t:'أذكار الصباح',ok:()=>pk('morning')>0},
+ {id:'pe',icon:'🌙',t:'أذكار المساء',ok:()=>pk('evening')>0},
+ {id:'ps',icon:'😴',t:'أذكار النوم',ok:()=>pk('sleep')>0},
+ {id:'pp',icon:'🕌',t:'بعد الصلاة',ok:()=>pk('prayer')>0}
+];
+function blank(){return {st:{},pack:'custom',tot:0,day:{},vib:true,snd:true,auto:false,goal:0,packDone:{},ach:[]}}
+let D=null;
+try{D=JSON.parse(localStorage.getItem('tasbeeh7')||'null')}catch(e){}
+if(!D){try{const o=JSON.parse(localStorage.getItem('tasbeeh6')||'null');if(o&&o.z){D={st:{custom:{z:o.z,c:o.c||{},r:o.r||{},i:o.i||0}},pack:'custom',tot:o.tot||0,day:o.day||{},vib:o.vib!==false,snd:o.snd!==false,auto:!!o.auto,goal:o.goal||0,packDone:{},ach:[]}}}catch(e){}}
+if(!D)D=blank();
+if(!D.st)D.st={};
+if(!D.st.custom||!D.st.custom.z||!D.st.custom.z.length)D.st.custom={z:DEFZ.map(x=>({...x})),c:{},r:{},i:0};
+if(D.vib===undefined)D.vib=true;if(D.snd===undefined)D.snd=true;if(D.auto===undefined)D.auto=false;
+if(!D.goal)D.goal=0;if(!D.day)D.day={};if(!D.packDone)D.packDone={};if(!D.ach)D.ach=[];if(!D.tot)D.tot=0;
+if(!D.pack||!PACKS[D.pack])D.pack='custom';
+const sv=()=>{try{localStorage.setItem('tasbeeh7',JSON.stringify(D))}catch(e){}};
+function ensure(p){if(p==='custom'){if(!D.st.custom||!D.st.custom.z||!D.st.custom.z.length)D.st.custom={z:DEFZ.map(x=>({...x})),c:{},r:{},i:0};return D.st.custom}
+ if(!D.st[p]||!D.st[p].z)D.st[p]={z:PACKS[p].items.map(x=>({...x})),c:{},r:{},i:0,cdone:false};return D.st[p]}
+const S=()=>ensure(D.pack);
+function streak(){let s=0;const start=D.day[today()]?0:1;for(let d=start;;d++){if(D.day[ds(d)]>0)s++;else break}return s}
+function bestDay(){let b=0;for(const k in D.day)if(D.day[k]>b)b=D.day[k];return b}
+function totalRounds(){let t=0;for(const p in D.st)if(D.st[p]&&D.st[p].r)for(const k in D.st[p].r)t+=D.st[p].r[k];return t}
+function pk(id){const x=D.packDone[id];return x?(x.n||0):0}
 let AC=null;
 function chime(){if(!D.snd)return;try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();const t=AC.currentTime;[[660,0],[880,.12]].forEach(([f,dt])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='sine';o.frequency.value=f;g.gain.setValueAtTime(.0001,t+dt);g.gain.exponentialRampToValueAtTime(.12,t+dt+.02);g.gain.exponentialRampToValueAtTime(.0001,t+dt+.25);o.connect(g);g.connect(AC.destination);o.start(t+dt);o.stop(t+dt+.3)})}catch(e){}}
 let toastT=null;
-function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2200)}
-function streak(){let s=0;let start=D.day[today()]?0:1;for(let d=start;;d++){if(D.day[dstr(d)]>0)s++;else break}return s}
-function bestDay(){let b=0;for(const k in D.day)if(D.day[k]>b)b=D.day[k];return b}
-function totalRounds(){let t=0;for(const k in D.r)t+=D.r[k];return t}
+function toast(m){const t=$('toast');t.textContent=m;t.classList.add('show');clearTimeout(toastT);toastT=setTimeout(()=>t.classList.remove('show'),2400)}
 const DN=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
-function renderChart(){const ch=$('chart');ch.innerHTML='';let mx=1;const vals=[];for(let d=6;d>=0;d--){const v=D.day[dstr(d)]||0;vals.push([d,v]);if(v>mx)mx=v}
- vals.forEach(([d,v])=>{const col=document.createElement('div');col.className='col'+(d==0?' today':'');const b=document.createElement('div');b.className='b';b.style.height=(v/mx*100)+'%';b.title=v;const lb=document.createElement('div');lb.className='d';lb.textContent=d==0?'اليوم':DN[new Date(dstr(d)+'T12:00:00').getDay()];col.appendChild(b);col.appendChild(lb);ch.appendChild(col)})}
-function R(){const z=D.z[D.i],c=D.c[D.i]||0;$('txt').textContent=z.n;$('tap').firstChild.nodeValue=c;$('pr').style.strokeDashoffset=289*(1-Math.min(1,c/z.g));
- $('rd').textContent=D.r[D.i]||0;const td=D.day[today()]||0;$('td').textContent=td;$('tdl').textContent=D.goal?('هدف اليوم '+D.goal):'إجمالي اليوم';$('dayBox').classList.toggle('done',D.goal>0&&td>=D.goal);$('tt').textContent=D.tot;
- $('vb').textContent='اهتزاز: '+(D.vib?'تشغيل':'إيقاف');$('sn').textContent='صوت: '+(D.snd?'تشغيل':'إيقاف');$('au').textContent='انتقال تلقائي: '+(D.auto?'تشغيل':'إيقاف');
- $('stk').textContent=streak();$('bst').textContent=bestDay();$('trd').textContent=totalRounds();renderChart();
- $('zk').innerHTML='';D.z.forEach((x,i)=>{const b=document.createElement('button');b.className='ch'+(i==D.i?' on':'');b.textContent=x.n+' · '+x.g;b.onclick=()=>{D.i=i;sv();R()};$('zk').appendChild(b)})}
-$('tap').onclick=()=>{const z=D.z[D.i];D.c[D.i]=(D.c[D.i]||0)+1;D.tot++;D.day[today()]=(D.day[today()]||0)+1;
+function renderChart(){const ch=$('chart');ch.innerHTML='';let mx=1;const vals=[];for(let d=6;d>=0;d--){const v=D.day[ds(d)]||0;vals.push([d,v]);if(v>mx)mx=v}
+ vals.forEach(([d,v])=>{const col=document.createElement('div');col.className='col'+(d==0?' today':'');const b=document.createElement('div');b.className='b';b.style.height=(v/mx*100)+'%';b.title=String(v);const lb=document.createElement('div');lb.className='d';lb.textContent=d==0?'اليوم':DN[new Date(ds(d)+'T12:00:00').getDay()];col.appendChild(b);col.appendChild(lb);ch.appendChild(col)})}
+function renderHeat(){const h=$('heat');h.innerHTML='';const mx=Math.max(1,bestDay());
+ for(let d=29;d>=0;d--){const v=D.day[ds(d)]||0;const c=document.createElement('div');c.className='hc'+(d===0?' now':'');if(v)c.style.background='rgba(45,212,191,'+(0.3+0.7*Math.min(1,v/mx)).toFixed(2)+')';c.title=ds(d)+' — '+v;h.appendChild(c)}}
+function renderAch(){const box=$('badges');box.innerHTML='';let n=0;
+ ACH.forEach(a=>{const on=D.ach.indexOf(a.id)>=0;if(on)n++;const d=document.createElement('div');d.className='bd'+(on?' on':'');const i=document.createElement('i');i.textContent=on?a.icon:'🔒';const s=document.createElement('span');s.textContent=a.t;d.appendChild(i);d.appendChild(s);box.appendChild(d)});
+ $('achn').textContent=n+'/'+ACH.length}
+function checkAch(silent){let got=null;ACH.forEach(a=>{if(D.ach.indexOf(a.id)<0){let ok=false;try{ok=a.ok()}catch(e){}if(ok){D.ach.push(a.id);got=a}}});if(got&&!silent)setTimeout(()=>toast('🏅 شارة جديدة: '+got.t),900);return got}
+function renderChips(){const s=S(),zk=$('zk');zk.innerHTML='';s.z.forEach((x,i)=>{const b=document.createElement('button');b.className='ch'+(i==s.i?' on':'');const done=(s.r[i]||0)>=1;b.textContent=(done?'✓ ':'')+x.n+' · '+x.g;b.onclick=()=>{s.i=i;sv();R()};zk.appendChild(b)})}
+function renderPacks(){const box=$('packs');box.innerHTML='';
+ Object.keys(PACKS).forEach(id=>{const P=PACKS[id],st=ensure(id);const b=document.createElement('button');b.className='pk'+(D.pack===id?' on':'');
+  const done=st.z.filter((x,i)=>(st.r[i]||0)>=1).length;
+  const nm=document.createElement('span');nm.className='nm';nm.textContent=P.icon+' '+P.name;
+  const pg=document.createElement('span');pg.className='pg';pg.textContent=(id==='custom'?'ذكر مخصص':'تم '+done+' من '+st.z.length);
+  b.appendChild(nm);b.appendChild(pg);
+  if(id!=='custom'&&st.cdone){const ok=document.createElement('span');ok.className='ok';ok.textContent='✅';b.appendChild(ok)}
+  b.onclick=()=>{D.pack=id;sv();$('packs').classList.remove('show');toast(P.icon+' '+P.name);R()};
+  box.appendChild(b)})}
+function R(){const s=S(),z=s.z[s.i],c=s.c[s.i]||0;
+ $('txt').textContent=z.n;
+ $('txt').style.fontSize=z.n.length>60?'17px':z.n.length>36?'21px':z.n.length>20?'25px':'30px';
+ $('tap').firstChild.nodeValue=String(c);
+ $('pr').style.strokeDashoffset=289*(1-Math.min(1,c/z.g));
+ $('rd').textContent=s.r[s.i]||0;
+ const td=D.day[today()]||0;$('td').textContent=td;$('tdl').textContent=D.goal?('هدف اليوم '+D.goal):'إجمالي اليوم';
+ $('dayBox').classList.toggle('done',D.goal>0&&td>=D.goal);$('tt').textContent=D.tot;
+ $('vb').textContent='اهتزاز: '+(D.vib?'تشغيل':'إيقاف');$('sn').textContent='صوت: '+(D.snd?'تشغيل':'إيقاف');$('au').textContent='تلقائي: '+(D.auto?'تشغيل':'إيقاف');
+ const P=PACKS[D.pack];$('pbtn').textContent=P.icon+' '+P.name+' ▾';
+ const isPack=D.pack!=='custom';$('pprog').classList.toggle('show',isPack);$('pcnt').classList.toggle('show',isPack);
+ if(isPack){const done=s.z.filter((x,i)=>(s.r[i]||0)>=1).length;$('pfill').style.width=(done/s.z.length*100)+'%';$('pcnt').textContent=(s.cdone?'✅ ':'')+done+'/'+s.z.length}
+ $('stk').textContent=streak();$('bst').textContent=bestDay();$('trd').textContent=totalRounds();
+ renderChart();renderHeat();renderAch();renderChips();renderPacks()}
+function packDoneCheck(s){if(D.pack==='custom'||s.cdone)return;
+ if(s.z.every((x,i)=>(s.r[i]||0)>=1)){s.cdone=true;const o=D.packDone[D.pack]||{n:0,last:''};o.n=(o.n||0)+1;o.last=today();D.packDone[D.pack]=o;
+  const nm=PACKS[D.pack].name;setTimeout(()=>{toast('🎉 خلصت '+nm+' — تقبل الله');chime()},1300)}}
+function count(){const s=S(),z=s.z[s.i];
+ s.c[s.i]=(s.c[s.i]||0)+1;D.tot++;D.day[today()]=(D.day[today()]||0)+1;
  if(D.vib&&navigator.vibrate)navigator.vibrate(10);
- if(D.c[D.i]>=z.g){D.c[D.i]=0;D.r[D.i]=(D.r[D.i]||0)+1;if(D.vib&&navigator.vibrate)navigator.vibrate([80,60,80]);chime();
-  $('ring').classList.remove('flash');void $('ring').offsetWidth;$('ring').classList.add('flash');
-  if(D.auto&&D.z.length>1){toast('ما شاء الله! كملت «'+z.n+'» — الذكر التالي');const nx=(D.i+1)%D.z.length;setTimeout(()=>{D.i=nx;sv();R()},900)}else toast('ما شاء الله! جولة كاملة من «'+z.n+'» ✨')}
- sv();R()};
-$('rs').onclick=()=>{D.c[D.i]=0;sv();R()};$('vb').onclick=()=>{D.vib=!D.vib;sv();R()};$('sn').onclick=()=>{D.snd=!D.snd;sv();R();if(D.snd)chime()};$('au').onclick=()=>{D.auto=!D.auto;sv();R()};$('ad').onclick=()=>$('set').classList.toggle('show');
+ if(s.c[s.i]>=z.g){s.c[s.i]=0;s.r[s.i]=(s.r[s.i]||0)+1;
+  if(D.vib&&navigator.vibrate)navigator.vibrate([80,60,80]);chime();
+  const ring=$('ring');ring.classList.remove('flash');void ring.offsetWidth;ring.classList.add('flash');
+  if(D.auto&&s.z.length>1){toast('ما شاء الله! كملت «'+z.n+'» — الذكر التالي');const nx=(s.i+1)%s.z.length;setTimeout(()=>{s.i=nx;sv();R()},900)}
+  else toast('ما شاء الله! جولة كاملة من «'+z.n+'» ✨');
+  packDoneCheck(s)}
+ checkAch();sv();R()}
+$('tap').onclick=count;
+$('rs').onclick=()=>{const s=S();s.c[s.i]=0;s.cdone=false;sv();R()};
+$('vb').onclick=()=>{D.vib=!D.vib;sv();R()};
+$('sn').onclick=()=>{D.snd=!D.snd;sv();R();if(D.snd)chime()};
+$('au').onclick=()=>{D.auto=!D.auto;sv();R()};
+$('ad').onclick=()=>$('set').classList.toggle('show');
+$('pbtn').onclick=()=>$('packs').classList.toggle('show');
 $('st').onclick=()=>$('stats').classList.toggle('show');
-$('sv').onclick=()=>{const n=$('nn').value.trim(),g=parseInt($('ng').value);if(n&&g>0){D.z.push({n,g});D.i=D.z.length-1;$('nn').value='';$('ng').value='';$('set').classList.remove('show');sv();R()}};
-$('dz').onclick=()=>{if(D.z.length<=1){toast('لازم يفضل ذكر واحد على الأقل');return}const nm=D.z[D.i].n;const names=D.z.map(x=>x.n);const oldC=D.c,oldR=D.r;D.z.splice(D.i,1);D.c={};D.r={};D.z.forEach((x,i)=>{const oi=names.indexOf(x.n);if(oi>=0){if(oldC[oi])D.c[i]=oldC[oi];if(oldR[oi])D.r[i]=oldR[oi]}});D.i=0;toast('اتحذف «'+nm+'»');sv();R()};
-$('gs').onclick=()=>{const g=parseInt($('goal').value);D.goal=g>0?g:0;$('goal').value='';toast(D.goal?('هدفك اليومي: '+D.goal):'الهدف اليومي اتلغى');sv();R()};
-R();
-</script><div id="mkt-share" style="text-align:center;margin:22px auto 30px;max-width:480px;padding:0 14px;font-family:system-ui,'Segoe UI',Tahoma,sans-serif;color:#9aa3b2;font-size:13px;line-height:1.9">
-<button id="mkt-btn" type="button" style="background:#0f766e;color:#fff;border:0;border-radius:12px;padding:11px 22px;font-size:15px;font-weight:700;font-family:inherit;cursor:pointer">📤 شارك التطبيق مع صحابك</button>
+$('sv').onclick=()=>{const n=$('nn').value.trim(),g=parseInt($('ng').value);if(n&&g>0){const s=S();s.z.push({n:n,g:g});s.i=s.z.length-1;$('nn').value='';$('ng').value='';$('set').classList.remove('show');toast('اتضاف «'+n+'»');sv();R()}};
+$('dz').onclick=()=>{const s=S();if(s.z.length<=1){toast('لازم يفضل ذكر واحد على الأقل');return}const nm=s.z[s.i].n;const names=s.z.map(x=>x.n);const oldC=s.c,oldR=s.r;s.z.splice(s.i,1);s.c={};s.r={};s.z.forEach((x,i)=>{const oi=names.indexOf(x.n);if(oi>=0){if(oldC[oi])s.c[i]=oldC[oi];if(oldR[oi])s.r[i]=oldR[oi]}});s.i=0;toast('اتحذف «'+nm+'»');sv();R()};
+$('gs').onclick=()=>{const g=parseInt($('goal').value);D.goal=g>0?g:0;$('goal').value='';toast(D.goal?('هدفك اليومي: '+D.goal):'الهدف اليومي اتلغى');checkAch();sv();R()};
+document.addEventListener('keydown',e=>{const tg=e.target&&e.target.tagName;if(tg==='INPUT'||tg==='TEXTAREA')return;if(e.code==='Space'||e.code==='Enter'){e.preventDefault();count()}});
+checkAch(true);R();
+</script>
+<div id="mkt-share">
+<button id="mkt-btn" type="button">📤 شارك التطبيق مع صحابك</button>
 <div style="margin-top:10px">صُنع في مصر 🇪🇬</div>
 </div>
 <script>
@@ -115,4 +246,3 @@ R();
 })();
 </script>
 </body></html>
-
