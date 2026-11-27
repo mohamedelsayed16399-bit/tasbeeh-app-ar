@@ -384,7 +384,7 @@ document.addEventListener('keydown',e=>{const tg=e.target&&e.target.tagName;if(t
 $('egs').onclick=()=>{const s=S(),g=parseInt($('eg').value);if(!(g>0)){toast('اكتب عدد أكبر من صفر');return}
  const z=s.z[s.i];z.g=g;if((s.c[s.i]||0)>=g)s.c[s.i]=0;$('eg').value='';
  toast('عدد «'+z.n+'» بقى '+g+' ✅');$('edp').classList.remove('show');sv();R()};
-const APK_URL='https://github.com/mohamedelsayed16399-bit/tasbeeh-app-ar/releases/download/v1.1.0/tasbeeh.apk';
+const APK_URL='https://github.com/mohamedelsayed16399-bit/tasbeeh-app-ar/releases/download/v1.2.0/tasbeeh.apk';
 let deferredInst=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInst=e;$('ins').classList.add('on')});
 window.addEventListener('appinstalled',()=>{deferredInst=null;$('ins').classList.remove('on');toast('التطبيق اتثبت ✅')});
