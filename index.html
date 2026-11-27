@@ -275,14 +275,16 @@ document.addEventListener('keydown',e=>{const tg=e.target&&e.target.tagName;if(t
 $('egs').onclick=()=>{const s=S(),g=parseInt($('eg').value);if(!(g>0)){toast('اكتب عدد أكبر من صفر');return}
  const z=s.z[s.i];z.g=g;if((s.c[s.i]||0)>=g)s.c[s.i]=0;$('eg').value='';
  toast('عدد «'+z.n+'» بقى '+g+' ✅');$('edp').classList.remove('show');sv();R()};
+const APK_URL='https://github.com/mohamedelsayed16399-bit/tasbeeh-app-ar/releases/download/v1.0.0/tasbeeh.apk';
 let deferredInst=null;
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInst=e;$('ins').classList.add('on')});
 window.addEventListener('appinstalled',()=>{deferredInst=null;$('ins').classList.remove('on');toast('التطبيق اتثبت ✅')});
 $('ins').onclick=async()=>{
+ if(LN){toast('التطبيق متثبت عندك بالفعل ✅');return}
  const std=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||navigator.standalone;
- if(std){toast('التطبيق متثبت عندك بالفعل ✅');return}
- if(deferredInst){deferredInst.prompt();try{const r=await deferredInst.userChoice;if(r&&r.outcome==='accepted')toast('تمام! التطبيق بيتثبت 📲')}catch(e){}deferredInst=null;return}
- toast('من قائمة المتصفح (⋮) اختار «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية» 📲',7000)};
+ if(std){toast('نسخة المتصفح متثبتة ✅ — عشان التنبيهات ترن والتطبيق مقفول، نزّل نسخة الـ APK من الموقع على الموبايل',7000)}
+ toast('بينزل دلوقتي ملف التطبيق (APK) — نفس التطبيق بتنبيهات حقيقية ترن والموبايل مقفول. بعد ما يخلص افتحه وسمّح بالتثبيت 📲 ولو عايز نسخة المتصفح: من قائمة ⋮ اختار «إضافة إلى الشاشة الرئيسية»',9000);
+ const a=document.createElement('a');a.href=APK_URL;a.rel='noopener';document.body.appendChild(a);a.click();a.remove()};
 let natReady=false;
 async function natInit(){if(!LN)return;
  try{for(const sd of SOUNDS){const ch={id:'snd_'+sd.id,name:sd.nm.replace(/^\S+ /,''),description:'صوت تنبيه المسبحة',importance:5,visibility:1,vibration:true};if(sd.f)ch.sound=sd.f.split('/').pop();try{await LN.createChannel(ch)}catch(e){}}}catch(e){}
