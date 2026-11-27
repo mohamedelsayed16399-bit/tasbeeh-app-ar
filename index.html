@@ -111,7 +111,7 @@ h1{margin:0;font-size:22px}
 <div class="row"><button class="btn" id="rm">⏰ تنبيه الذكر</button><button class="btn" id="ins">⬇️ تثبيت التطبيق</button></div>
 <div id="set"><div class="ph">➕ ذكر جديد</div><input id="nn" placeholder="نص الذكر"><input id="ng" type="number" inputmode="numeric" placeholder="العدد المستهدف (مثال 33)"><button class="btn" id="sv">➕ إضافة الذكر</button></div>
 <div id="edp"><div class="ph">✏️ تعديل عدد الذكر الحالي</div><div class="et" id="edn"></div><input id="eg" type="number" inputmode="numeric" placeholder="العدد الجديد"><button class="btn" id="egs">💾 حفظ العدد الجديد</button><button class="btn del" id="dz">🗑 حذف الذكر الحالي</button></div>
-<div id="rem"><div class="hint">⏰ تنبيه يومي بصوت مميز واهتزاز. مهم بصراحة: التنبيه بيرن طالما التطبيق مفتوح (حتى لو في الخلفية والشاشة مطفية غالبًا) — لو قفلت التطبيق خالص مفيش تنبيه، لأن دي حدود أي موقع مجاني من غير سيرفر.</div><input id="rt" type="time"><select id="rp"></select><button class="btn" id="ra">➕ إضافة التنبيه</button><div id="rl"></div></div>
+<div id="rem"><div class="hint" id="remhint"></div><input id="rt" type="time"><select id="rp"></select><select id="rs2"></select><div style="display:flex;gap:8px"><button class="btn" id="rprev" style="flex:0 0 44%">▶️ تجربة الصوت</button><button class="btn" id="ra" style="flex:1">➕ إضافة التنبيه</button></div><div id="rl"></div><div class="hint" style="font-size:11px">مصادر الأصوات: تلاوة سورة الإخلاص (المنشاوي — ملك عام) والصلاة الإبراهيمية والأصوات الطبيعية من Wikimedia Commons برخص حرة (CC BY-SA / CC0).</div></div>
 <div id="rmbig"><div class="card"><div class="ic">📿</div><div class="msg" id="rmbmsg"></div><button id="rmbok">تمام، هسبّح دلوقتي</button></div></div>
 <div id="stats">
 <div class="ttl">🎯 هدفك اليومي</div>
@@ -187,6 +187,18 @@ if(D.vib===undefined)D.vib=true;if(D.snd===undefined)D.snd=true;if(D.auto===unde
 if(!D.goal)D.goal=0;if(!D.day)D.day={};if(!D.packDone)D.packDone={};if(!D.ach)D.ach=[];if(!D.tot)D.tot=0;
 if(!D.pack||!PACKS[D.pack])D.pack='custom';
 if(!D.rem)D.rem=[];if(!D.remF)D.remF={};
+D.rem.forEach(r=>{if(!r.snd)r.snd='ikhlas';if(!r.nid)r.nid=1000+Math.floor(Math.random()*2000000000)});
+const SOUNDS=[
+ {id:'ikhlas',nm:'🎙 سورة الإخلاص (المنشاوي)',f:'ikhlas.mp3'},
+ {id:'salawat',nm:'🎙 الصلاة على النبي ﷺ',f:'salawat.mp3'},
+ {id:'birds',nm:'🐦 عصافير الصبح',f:'birds.mp3'},
+ {id:'rain',nm:'🌧 صوت المطر',f:'rain.mp3'},
+ {id:'water',nm:'💧 ميه جارية',f:'water.mp3'},
+ {id:'chime',nm:'🔔 نغمة بسيطة',f:null}
+];
+const sndById=i=>SOUNDS.find(x=>x.id===i)||SOUNDS[0];
+const NAT=!!(window.Capacitor&&window.Capacitor.isNativePlatform&&window.Capacitor.isNativePlatform());
+const LN=(NAT&&window.Capacitor.Plugins)?window.Capacitor.Plugins.LocalNotifications:null;
 const sv=()=>{try{localStorage.setItem('tasbeeh7',JSON.stringify(D))}catch(e){}};
 function ensure(p){if(p==='custom'){if(!D.st.custom||!D.st.custom.z||!D.st.custom.z.length)D.st.custom={z:DEFZ.map(x=>({...x})),c:{},r:{},i:0};return D.st.custom}
  if(!D.st[p]||!D.st[p].z)D.st[p]={z:PACKS[p].items.map(x=>({...x})),c:{},r:{},i:0,cdone:false};return D.st[p]}
@@ -271,37 +283,59 @@ $('ins').onclick=async()=>{
  if(std){toast('التطبيق متثبت عندك بالفعل ✅');return}
  if(deferredInst){deferredInst.prompt();try{const r=await deferredInst.userChoice;if(r&&r.outcome==='accepted')toast('تمام! التطبيق بيتثبت 📲')}catch(e){}deferredInst=null;return}
  toast('من قائمة المتصفح (⋮) اختار «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية» 📲',7000)};
+let natReady=false;
+async function natInit(){if(!LN)return;
+ try{for(const sd of SOUNDS){const ch={id:'snd_'+sd.id,name:sd.nm.replace(/^\S+ /,''),description:'صوت تنبيه المسبحة',importance:5,visibility:1,vibration:true};if(sd.f)ch.sound=sd.f.split('/').pop();try{await LN.createChannel(ch)}catch(e){}}}catch(e){}
+ try{await LN.addListener('localNotificationActionPerformed',ev=>{const w=ev.notification&&ev.notification.extra&&ev.notification.extra.what;if(w&&PACKS[w]){D.pack=w;sv();R()}})}catch(e){}
+ natReady=true;natSync()}
+async function natSync(){if(!LN||!natReady)return;
+ try{const p=await LN.getPending();if(p&&p.notifications&&p.notifications.length)await LN.cancel({notifications:p.notifications.map(n=>({id:n.id}))})}catch(e){}
+ const list=[];
+ D.rem.forEach(r=>{if(!r.on)return;const m=/^(\d{2}):(\d{2})$/.exec(r.t);if(!m)return;
+  list.push({id:r.nid,title:'📿 المسبحة',body:'حان وقت '+r.lbl,channelId:'snd_'+sndById(r.snd).id,schedule:{on:{hour:+m[1],minute:+m[2]},allowWhileIdle:true},extra:{what:r.what||'now'},smallIcon:'ic_stat_tasbeeh'})});
+ if(list.length){try{await LN.schedule({notifications:list})}catch(e){}}}
+function renderRS(){const sel=$('rs2');if(!sel)return;sel.innerHTML='';SOUNDS.forEach(x=>{const o=document.createElement('option');o.value=x.id;o.textContent=x.nm;sel.appendChild(o)})}
 function renderRP(){const sel=$('rp');sel.innerHTML='';
  [['now','📿 الذكر الحالي']].concat(Object.keys(PACKS).map(id=>[id,PACKS[id].icon+' '+PACKS[id].name])).forEach(([v,t])=>{const o=document.createElement('option');o.value=v;o.textContent=t;sel.appendChild(o)})}
 function renderRL(){const box=$('rl');box.innerHTML='';
  if(!D.rem.length){const e=document.createElement('div');e.style.cssText='font-size:12px;opacity:.6;text-align:center';e.textContent='مفيش تنبيهات لسه — ضيف واحد فوق';box.appendChild(e);return}
  D.rem.forEach(r=>{const d=document.createElement('div');d.className='rm';
-  const t=document.createElement('span');t.className='tm';t.textContent='⏰ '+r.t+' — '+r.lbl;
-  const tg=document.createElement('button');tg.textContent=r.on?'🔔':'🔕';tg.onclick=()=>{r.on=!r.on;sv();renderRL()};
- const dl=document.createElement('button');dl.textContent='🗑';dl.onclick=()=>{D.rem=D.rem.filter(x=>x.id!==r.id);sv();renderRL();toast('التنبيه اتحذف')};
+  const t=document.createElement('span');t.className='tm';t.textContent='⏰ '+r.t+' — '+r.lbl+' · '+sndById(r.snd).nm;
+  const tg=document.createElement('button');tg.textContent=r.on?'🔔':'🔕';tg.onclick=()=>{r.on=!r.on;sv();renderRL();natSync()};
+ const dl=document.createElement('button');dl.textContent='🗑';dl.onclick=()=>{D.rem=D.rem.filter(x=>x.id!==r.id);sv();renderRL();natSync();toast('التنبيه اتحذف')};
   d.appendChild(t);d.appendChild(tg);d.appendChild(dl);box.appendChild(d)})}
 $('rm').onclick=()=>$('rem').classList.toggle('show');
 $('ra').onclick=async()=>{const t=$('rt').value;if(!/^\d{2}:\d{2}$/.test(t)){toast('اختار الوقت الأول ⏰');return}
  const sel=$('rp'),lbl=sel.options[sel.selectedIndex].textContent;
- D.rem.push({id:Date.now()+Math.floor(Math.random()*1000),t:t,what:sel.value,lbl:lbl,on:true});sv();renderRL();
+ D.rem.push({id:Date.now()+Math.floor(Math.random()*1000),nid:1000+Math.floor(Math.random()*2000000000),t:t,what:sel.value,lbl:lbl,snd:$('rs2').value,on:true});sv();renderRL();
  toast('اتضاف تنبيه يومي الساعة '+t+' ⏰');
+ if(LN){
+  try{const perm=await LN.requestPermissions();if(!perm||perm.display!=='granted')toast('⚠️ الإشعارات مقفولة — فعّلها من إعدادات التطبيق عشان التنبيه يرن',6000)}catch(e){}
+  try{const ex=await LN.checkExactNotificationSetting();if(ex&&ex.exact_alarm!=='granted'){toast('⚠️ مهم: فعّل «المنبّهات والتذكيرات» في الشاشة اللي هتفتح عشان التنبيه ييجي في معاده بالظبط',8000);setTimeout(()=>{LN.changeExactNotificationSetting().catch(()=>{})},1200)}}catch(e){}
+  natSync();return}
  if('Notification' in window&&Notification.permission==='default'){try{await Notification.requestPermission()}catch(e){}}};
+$('rprev').onclick=()=>{const sd=sndById($('rs2').value);stopSound();if(sd.f){try{const a=new Audio(sd.f);a.play().catch(()=>toast('الصوت مش متاح'));}catch(e){}}else remSound()};
 let remRing=null,lastRem=null;
 function remSound(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const t0=AC.currentTime;
  [[523,0,.3],[659,.3,.3],[784,.6,.45],[659,1.1,.3],[523,1.4,.5],[784,2,.75]].forEach(([f,dt,du])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t0+dt);g.gain.exponentialRampToValueAtTime(.18,t0+dt+.03);g.gain.exponentialRampToValueAtTime(.0001,t0+dt+du);o.connect(g);g.connect(AC.destination);o.start(t0+dt);o.stop(t0+dt+du+.05)})}catch(e){}}
+let curAud=null;
+function stopSound(){try{if(curAud){curAud.pause();curAud.currentTime=0;curAud=null}}catch(e){}clearInterval(remRing)}
 function fireRem(r){lastRem=r;D.remF[r.id]=today();sv();
  if(D.vib&&navigator.vibrate)navigator.vibrate([300,100,300,100,500]);
- let n=0;remSound();clearInterval(remRing);remRing=setInterval(()=>{remSound();if(++n>=2)clearInterval(remRing)},3200);
+ stopSound();const sd=sndById(r.snd);
+ if(sd.f){try{const a=new Audio(sd.f);a.loop=true;a.play().catch(()=>{});curAud=a}catch(e){remSound();remRing=setInterval(()=>{remSound()},3200)}}
+ else{let n=0;remSound();remRing=setInterval(()=>{remSound();if(++n>=2)clearInterval(remRing)},3200)}
  $('rmbmsg').textContent='حان وقت '+r.lbl;
  $('rmbig').classList.add('show');
  if('Notification' in window&&Notification.permission==='granted'){try{new Notification('📿 المسبحة',{body:'حان وقت '+r.lbl})}catch(e){}}}
-$('rmbok').onclick=()=>{$('rmbig').classList.remove('show');clearInterval(remRing);
+$('rmbok').onclick=()=>{$('rmbig').classList.remove('show');stopSound();
  if(lastRem&&lastRem.what&&PACKS[lastRem.what]){D.pack=lastRem.what;sv();R();toast(PACKS[lastRem.what].icon+' '+PACKS[lastRem.what].name)}};
-function checkRem(){const nw=new Date(),hm=pad(nw.getHours())+':'+pad(nw.getMinutes());
+function checkRem(){if(NAT)return;const nw=new Date(),hm=pad(nw.getHours())+':'+pad(nw.getMinutes());
  D.rem.forEach(r=>{if(r.on&&r.t===hm&&D.remF[r.id]!==today())fireRem(r)})}
 setInterval(checkRem,15000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden)checkRem()});
-renderRP();renderRL();
+$('remhint').textContent=NAT?'⏰ التنبيه بيرن في معاده بالظبط حتى لو التطبيق مقفول خالص، زي منبّه الموبايل بالظبط. اختار الوقت والذكر والصوت لكل تنبيه.':'⏰ تنبيه يومي بصوت من اختيارك واهتزاز. مهم بصراحة: في المتصفح التنبيه بيرن طالما التطبيق مفتوح (حتى لو في الخلفية) — لو قفلته خالص مفيش تنبيه. عشان يرن والمقفول، نزّل نسخة التطبيق من زرار «تثبيت التطبيق» أو الـ APK.';
+renderRS();renderRP();renderRL();natInit();
 checkAch(true);R();
 </script>
 <div id="mkt-share">
