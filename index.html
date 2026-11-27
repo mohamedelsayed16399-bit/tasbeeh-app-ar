@@ -314,7 +314,7 @@ $('ra').onclick=async()=>{const t=$('rt').value;if(!/^\d{2}:\d{2}$/.test(t)){toa
   try{const ex=await LN.checkExactNotificationSetting();if(ex&&ex.exact_alarm!=='granted'){toast('⚠️ مهم: فعّل «المنبّهات والتذكيرات» في الشاشة اللي هتفتح عشان التنبيه ييجي في معاده بالظبط',8000);setTimeout(()=>{LN.changeExactNotificationSetting().catch(()=>{})},1200)}}catch(e){}
   natSync();return}
  if('Notification' in window&&Notification.permission==='default'){try{await Notification.requestPermission()}catch(e){}}};
-$('rprev').onclick=()=>{const sd=sndById($('rs2').value);stopSound();if(sd.f){try{const a=new Audio(sd.f);a.play().catch(()=>toast('الصوت مش متاح'));}catch(e){}}else remSound()};
+$('rprev').onclick=()=>{const sd=sndById($('rs2').value);stopSound();if(sd.f){try{const a=new Audio(sd.f);const fb=()=>{toast('الصوت مش متاح لسه — بينزل قريب');remSound()};a.addEventListener('error',fb);a.play().catch(fb)}catch(e){remSound()}}else remSound()};
 let remRing=null,lastRem=null;
 function remSound(){try{AC=AC||new(window.AudioContext||window.webkitAudioContext)();if(AC.state==='suspended')AC.resume();const t0=AC.currentTime;
  [[523,0,.3],[659,.3,.3],[784,.6,.45],[659,1.1,.3],[523,1.4,.5],[784,2,.75]].forEach(([f,dt,du])=>{const o=AC.createOscillator(),g=AC.createGain();o.type='triangle';o.frequency.value=f;g.gain.setValueAtTime(.0001,t0+dt);g.gain.exponentialRampToValueAtTime(.18,t0+dt+.03);g.gain.exponentialRampToValueAtTime(.0001,t0+dt+du);o.connect(g);g.connect(AC.destination);o.start(t0+dt);o.stop(t0+dt+du+.05)})}catch(e){}}
@@ -323,7 +323,9 @@ function stopSound(){try{if(curAud){curAud.pause();curAud.currentTime=0;curAud=n
 function fireRem(r){lastRem=r;D.remF[r.id]=today();sv();
  if(D.vib&&navigator.vibrate)navigator.vibrate([300,100,300,100,500]);
  stopSound();const sd=sndById(r.snd);
- if(sd.f){try{const a=new Audio(sd.f);a.loop=true;a.play().catch(()=>{});curAud=a}catch(e){remSound();remRing=setInterval(()=>{remSound()},3200)}}
+ if(sd.f){try{const a=new Audio(sd.f);a.loop=true;
+  const fb=()=>{if(curAud===a){curAud=null;let n=0;remSound();remRing=setInterval(()=>{remSound();if(++n>=2)clearInterval(remRing)},3200)}};
+  a.addEventListener('error',fb);a.play().catch(fb);curAud=a}catch(e){remSound();remRing=setInterval(()=>{remSound()},3200)}}
  else{let n=0;remSound();remRing=setInterval(()=>{remSound();if(++n>=2)clearInterval(remRing)},3200)}
  $('rmbmsg').textContent='حان وقت '+r.lbl;
  $('rmbig').classList.add('show');
