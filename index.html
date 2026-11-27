@@ -159,10 +159,12 @@ body.batt{filter:brightness(.75)!important}
  <div id="ppanel" style="display:none">
   <label>المدينة<select id="pcity"></select></label>
   <label>طريقة الحساب<select id="pmethod"></select></label>
+  <label>المؤذن<select id="pmuez"></select></label>
+  <button id="pprev" class="pmini">▶ سمّعني الأذان المختار</button>
   <button id="pgps" class="pmini">📍 استخدم موقعي الحالي (GPS)</button>
   <div class="psws" id="padhsw"></div>
   <div class="pnote" id="pnotif"></div>
-  <div class="pnote">صوت الأذان: تسجيل Andrewler — رخصة CC BY-SA 4.0 — Wikimedia Commons</div>
+  <div class="pnote" id="pcredit">صوت الأذان: تسجيل Andrewler — رخصة CC BY-SA 4.0 — Wikimedia Commons</div>
   <button id="pstop" class="pmini">⏹ إيقاف صوت الأذان</button>
  </div>
 </div>
@@ -705,6 +707,14 @@ var ADHAN_KEYS=['fajr','dhuhr','asr','maghrib','isha'];
 var CITIES=[['الإسكندرية',31.2001,29.9187],['القاهرة',30.0444,31.2357],['الجيزة',30.0131,31.2089],
  ['المنصورة',31.0409,31.3785],['طنطا',30.7865,31.0004],['بورسعيد',31.2653,32.3019],
  ['أسيوط',27.1809,31.1837],['الأقصر',25.6872,32.6396],['أسوان',24.0889,32.8998],['الإسماعيلية',30.6043,32.2715]];
+var MUEZ=[['def','الأذان الأصلي (التطبيق)','adhan.mp3','adhan_short','adhan','صوت الأذان: تسجيل Andrewler — رخصة CC BY-SA 4.0 — Wikimedia Commons'],
+ ['refaat','الشيخ محمد رفعت','adhan_refaat.mp3','adhan_refaat','adhan_refaat','تسجيل قديم للشيخ محمد رفعت من أرشيف الإنترنت. حقوقه محفوظة لأصحابه، والاستخدام على مسؤولية صاحب التطبيق.'],
+ ['basit','الشيخ عبد الباسط عبد الصمد','adhan_basit.mp3','adhan_basit','adhan_basit','تسجيل للشيخ عبد الباسط عبد الصمد من أرشيف الإنترنت. حقوقه محفوظة لأصحابه، والاستخدام على مسؤولية صاحب التطبيق.'],
+ ['hosary','الشيخ محمود خليل الحصري','adhan_hosary.mp3','adhan_hosary','adhan_hosary','تسجيل للشيخ محمود خليل الحصري من أرشيف الإنترنت. حقوقه محفوظة لأصحابه، والاستخدام على مسؤولية صاحب التطبيق.'],
+ ['ismail','الشيخ مصطفى إسماعيل','adhan_ismail.mp3','adhan_ismail','adhan_ismail','تسجيل للشيخ مصطفى إسماعيل من أرشيف الإنترنت. حقوقه محفوظة لأصحابه، والاستخدام على مسؤولية صاحب التطبيق.'],
+ ['fashni','الشيخ طه الفشني (أذان الفجر)','adhan_fashni.mp3','adhan_fashni','adhan_fashni','تسجيل للشيخ طه الفشني من أرشيف الإنترنت. حقوقه محفوظة لأصحابه، والاستخدام على مسؤولية صاحب التطبيق.'],
+ ['ali','الشيخ علي محمود','adhan_ali.mp3','adhan_ali','adhan_ali','تسجيل للشيخ علي محمود من أرشيف الإنترنت. حقوقه محفوظة لأصحابه، والاستخدام على مسؤولية صاحب التطبيق.']];
+function mz(){ var id=(D.pray&&D.pray.mz)||'def'; for(var i=0;i<MUEZ.length;i++) if(MUEZ[i][0]===id) return MUEZ[i]; return MUEZ[0]; }
 var METHODS=[['egypt','الهيئة المصرية العامة للمساحة',19.5,17.5],['mwl','رابطة العالم الإسلامي',18,17],['isna','ISNA (أمريكا)',15,15],['karachi','جامعة كراتشي',18,18]];
 
 function defP(){return {lat:31.2001,lon:29.9187,city:'الإسكندرية',gps:false,method:'egypt',
@@ -787,20 +797,20 @@ function fireCheck(){
   }
 }
 
-var audioEl=null;
+var audioEl=null, audioSrc='';
 function playAdhan(){
-  try{ if(!audioEl){ audioEl=new Audio('adhan.mp3'); audioEl.preload='auto'; }
+  try{ var f=mz()[2]; if(!audioEl||audioSrc!==f){ if(audioEl){try{audioEl.pause();}catch(e){}} audioEl=new Audio(f); audioSrc=f; audioEl.preload='auto'; }
     audioEl.currentTime=0; var p=audioEl.play(); if(p&&p.catch) p.catch(function(){});
   }catch(e){}
 }
 function stopAdhan(){ try{ if(audioEl){ audioEl.pause(); audioEl.currentTime=0; } }catch(e){} }
 
 /* ---------- الإشعارات (APK) ---------- */
-var CH='adhan';
+function CHN(){ return mz()[4]; }
 async function ensureChannel(){
   if(!LN||!LN.createChannel) return;
-  try{ await LN.createChannel({id:CH,name:'الأذان',description:'صوت الأذان وقت الصلاة',
-    sound:'adhan_short',importance:5,visibility:1,vibration:true,lights:true}); }catch(e){}
+  try{ await LN.createChannel({id:CHN(),name:'الأذان — '+mz()[1],description:'صوت الأذان وقت الصلاة',
+    sound:mz()[3],importance:5,visibility:1,vibration:true,lights:true}); }catch(e){}
 }
 async function clearScheduled(){
   if(!LN) return;
@@ -823,7 +833,7 @@ async function scheduleAll(){
         var when=atDate(day,t[k]);
         if(when.getTime()<=Date.now()+30000) continue;
         list.push({id:id++, title:'🕌 '+PN[k], body:'حان الآن وقت صلاة '+PN[k]+' — '+fmt(t[k]),
-          schedule:{at:when,allowWhileIdle:true}, sound:'adhan_short', channelId:CH, smallIcon:'ic_stat_tasbeeh'});
+          schedule:{at:when,allowWhileIdle:true}, sound:mz()[3], channelId:CHN(), smallIcon:'ic_stat_tasbeeh'});
       }
     }
     if(list.length) await LN.schedule({notifications:list});
@@ -860,6 +870,10 @@ function fillPanel(){
   var ms=$('pmethod'); if(ms){ var h2='';
     for(var j=0;j<METHODS.length;j++) h2+='<option value="'+METHODS[j][0]+'"'+(P().method===METHODS[j][0]?' selected':'')+'>'+METHODS[j][1]+'</option>';
     ms.innerHTML=h2; }
+  var mu=$('pmuez'); if(mu){ var h4='';
+    for(var q=0;q<MUEZ.length;q++) h4+='<option value="'+MUEZ[q][0]+'"'+(mz()[0]===MUEZ[q][0]?' selected':'')+'>'+MUEZ[q][1]+'</option>';
+    mu.innerHTML=h4; }
+  var cr=$('pcredit'); if(cr) cr.textContent=mz()[5];
   var sw=$('padhsw'); if(sw){ var h3='';
     for(var k=0;k<ADHAN_KEYS.length;k++){ var key=ADHAN_KEYS[k];
       h3+='<button class="psw'+(P().on[key]?' on':'')+'" data-pk="'+key+'">'+(P().on[key]?'🔔 ':'🔕 ')+PN[key]+'</button>'; }
@@ -883,6 +897,8 @@ function boot(){
   var pl=$('ploc'); if(pl) pl.onclick=useGPS;
   var pa=$('padhan'); if(pa) pa.onclick=openPanel;
   var st=$('pstop'); if(st) st.onclick=stopAdhan;
+  var mus=$('pmuez'); if(mus) mus.onchange=function(){ stopAdhan(); P().mz=this.value; sv(); fillPanel(); render(); scheduleAll(); };
+  var pv=$('pprev'); if(pv) pv.onclick=function(){ playAdhan(); };
   var g=$('pgps'); if(g) g.onclick=useGPS;
   var cs=$('pcity'); if(cs) cs.onchange=function(){
     if(this.value==='__gps'){ useGPS(); return; } setCity(this.value); fillPanel(); };
