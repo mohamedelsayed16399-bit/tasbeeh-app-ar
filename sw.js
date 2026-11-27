@@ -1,4 +1,4 @@
-const CACHE = 'v6-tasbeeh-app-ar';
+const CACHE = 'v7-tasbeeh-app-ar';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon-192.png', './icon-512.png', './ikhlas.mp3', './salawat.mp3', './birds.mp3', './rain.mp3', './water.mp3'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(CACHE).then(c => c.addAll(CORE)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== CACHE).map(k => caches.delete(k)))).then(() => self.clients.claim())); });
